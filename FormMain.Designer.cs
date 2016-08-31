@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMain));
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.файлToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menunew = new System.Windows.Forms.ToolStripMenuItem();
@@ -44,6 +45,8 @@
             this.menucut = new System.Windows.Forms.ToolStripMenuItem();
             this.menucopy = new System.Windows.Forms.ToolStripMenuItem();
             this.menupaste = new System.Windows.Forms.ToolStripMenuItem();
+            this.сборкаToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.компиляцияToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.справкаToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuhelp = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
@@ -72,6 +75,7 @@
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.файлToolStripMenuItem,
             this.правкаToolStripMenuItem,
+            this.сборкаToolStripMenuItem,
             this.справкаToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
@@ -207,6 +211,22 @@
             this.menupaste.Size = new System.Drawing.Size(181, 22);
             this.menupaste.Text = "Вставить";
             this.menupaste.Click += new System.EventHandler(this.menupaste_Click);
+            // 
+            // сборкаToolStripMenuItem
+            // 
+            this.сборкаToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.компиляцияToolStripMenuItem});
+            this.сборкаToolStripMenuItem.Name = "сборкаToolStripMenuItem";
+            this.сборкаToolStripMenuItem.Size = new System.Drawing.Size(89, 20);
+            this.сборкаToolStripMenuItem.Text = "Компиляция";
+            // 
+            // компиляцияToolStripMenuItem
+            // 
+            this.компиляцияToolStripMenuItem.Name = "компиляцияToolStripMenuItem";
+            this.компиляцияToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F5;
+            this.компиляцияToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
+            this.компиляцияToolStripMenuItem.Text = "Компиляция";
+            this.компиляцияToolStripMenuItem.Click += new System.EventHandler(this.компиляцияToolStripMenuItem_Click);
             // 
             // справкаToolStripMenuItem
             // 
@@ -393,6 +413,7 @@
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.toolStrip1);
             this.Controls.Add(this.menuStrip1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "FormMain";
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
@@ -445,7 +466,8 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
         private System.Windows.Forms.ToolStripButton toolundo;
         private System.Windows.Forms.ToolStripButton toolredo;
-
+        private System.Windows.Forms.ToolStripMenuItem сборкаToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem компиляцияToolStripMenuItem;
     }
 }
 

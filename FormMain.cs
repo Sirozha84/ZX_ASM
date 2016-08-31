@@ -91,5 +91,10 @@ namespace ZXASM
         private void toolundo_Click(object sender, EventArgs e) { Project.Undo(); DrawDocument(); }
         private void toolredo_Click(object sender, EventArgs e) { Project.Redo(); DrawDocument(); }
         private void toolStripStatusLabel1_Click(object sender, EventArgs e) { System.Diagnostics.Process.Start(Program.Url); }
+
+        private void компиляцияToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Compiler.Compile(textBox1.Text);
+        }
     }
 }
