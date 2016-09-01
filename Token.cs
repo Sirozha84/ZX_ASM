@@ -39,8 +39,34 @@ namespace ZXASM
         {
             string[] Str = str.Split(new char[] { ' ', ',' }, StringSplitOptions.RemoveEmptyEntries);
             IsComand = true;
+            ushort NN;
             switch (Str[0])
             {
+                case "ld":
+                    if (Str.Count() == 3)
+                    {
+                        if (Str[1] == "a")
+                        {
+                            if (ReadAdr(Str[2], out NN)) { Code = new byte[] { 58, B1(NN), B2(NN) }; };  //LD A,(NN)
+                        }
+                        if (Str[1] == "b")
+                        {
+                            if (Str[2] == "b") Code = new byte[] { 64 };
+                            if (Str[2] == "c") Code = new byte[] { 65 };
+                            if (Str[2] == "d") Code = new byte[] { 66 };
+                            if (Str[2] == "e") Code = new byte[] { 67 };
+                            if (Str[2] == "h") Code = new byte[] { 68 };
+                            if (Str[2] == "l") Code = new byte[] { 69 };
+                            if (Str[2] == "(hl)") Code = new byte[] { 70 };
+                            if (Str[2] == "a") Code = new byte[] { 71 };
+                            if (ReadNum(Str[2], out NN)) { Code = new byte[] { 6, B1(NN) }; };  //LD B,NN
+                        }
+                        if (Str[1] == "hl")
+                        {
+                            if (ReadNum(Str[2], out NN)) { Code = new byte[] { 33, B1(NN), B2(NN) }; };
+                        }
+                    }
+                    break;
                 case "nop": Code = new byte[] { 0 }; break;
                 case "ret": Code = new byte[] { 201 }; break;
                 case "exx": Code = new byte[] { 217 }; break;
@@ -55,8 +81,30 @@ namespace ZXASM
 
         public void SetAdress(int adr)
         {
-            Code[To] = (byte)(adr / 256);
-            Code[To + 1] = (byte)(adr % 256);
+            Code[To] = (byte)(adr % 256);
+            Code[To + 1] = (byte)(adr / 256);
         }
+
+        bool ReadNum(string str, out ushort res)
+        {
+            //if (str[0] == '#') //
+            return (ushort.TryParse(str, out res));
+            //else throw Exception.
+        }
+
+        bool ReadAdr(string str, out ushort res)
+        {
+            res = 0;
+            //if (str[0] == '#') //
+            if (str[0] == '(' & str[str.Length - 1] == ')')
+                return (ushort.TryParse(str.Trim('(', ')'), out res));
+            return false;
+            
+            //else throw Exception.
+        }
+
+        byte B1(ushort Num) { return (byte)(Num % 256); }
+        byte B2(ushort Num) { return (byte)(Num / 256); }
+
     }
 }

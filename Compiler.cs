@@ -29,7 +29,9 @@ namespace ZXASM
                 //if (token.IsComand) Token.List.Add(token);
             }
 
-            Console.WriteLine("Компиляция:");
+#if DEBUG
+            Console.WriteLine("Компиляция n" + Properties.Settings.Default.Runs +":");
+#endif
             List<byte> codes = new List<byte>();
             
             //Второй прогон
@@ -41,17 +43,22 @@ namespace ZXASM
                     if (l != null) t.SetAdress(l.Adress);
                 }
                 foreach (byte b in t.Code) codes.Add(b);
-
+#if DEBUG
                 foreach (byte b in t.Code) Console.Write(b + " ");
                 Console.Write(t.Label);
                 Console.WriteLine();
+#endif
             }
+#if DEBUG
 
             Console.WriteLine("Бинарник:");
             foreach (byte b in codes) Console.Write(b + " ");
             Console.WriteLine();
             Console.WriteLine("Размер бинарного кода: " + codes.Count + " байт.");
             Console.WriteLine();
+#endif
+            Properties.Settings.Default.Runs++; //Счётчик запусков, так, по приколу
+            Properties.Settings.Default.Bytes += codes.Count; //И счётчик кода всего, обожаю статистику :-)
         }
     }
 }
