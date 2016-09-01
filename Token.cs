@@ -52,5 +52,11 @@ namespace ZXASM
                     break;
             }
         }
+
+        public void SetAdress(int adr)
+        {
+            Code[To] = (byte)(adr / 256);
+            Code[To + 1] = (byte)(adr % 256);
+        }
     }
 }

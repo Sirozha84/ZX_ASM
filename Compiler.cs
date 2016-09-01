@@ -29,13 +29,29 @@ namespace ZXASM
                 //if (token.IsComand) Token.List.Add(token);
             }
 
+            Console.WriteLine("Компиляция:");
+            List<byte> codes = new List<byte>();
+            
+            //Второй прогон
             foreach (Token t in Token.List)
             {
+                if (t.Label != null)
+                {
+                    Label l = Label.List.Find(o => o.Name == t.Label);
+                    if (l != null) t.SetAdress(l.Adress);
+                }
+                foreach (byte b in t.Code) codes.Add(b);
+
                 foreach (byte b in t.Code) Console.Write(b + " ");
                 Console.Write(t.Label);
                 Console.WriteLine();
             }
 
+            Console.WriteLine("Бинарник:");
+            foreach (byte b in codes) Console.Write(b + " ");
+            Console.WriteLine();
+            Console.WriteLine("Размер бинарного кода: " + codes.Count + " байт.");
+            Console.WriteLine();
         }
     }
 }
