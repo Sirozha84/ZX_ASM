@@ -22,7 +22,7 @@ namespace ZXASM
                 if (Str != "" & List.Find(o => o.Name == Str) == null)
                 {
                     Name = Str;
-                    Adress = Token.Adress;
+                    Adress = Token.CurAdress;
                     List.Add(this);
                 }
             }

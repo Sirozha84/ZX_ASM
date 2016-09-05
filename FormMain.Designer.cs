@@ -65,6 +65,7 @@
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.textBox1 = new System.Windows.Forms.TextBox();
+            this.собратьСнимокToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -215,7 +216,8 @@
             // сборкаToolStripMenuItem
             // 
             this.сборкаToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.компиляцияToolStripMenuItem});
+            this.компиляцияToolStripMenuItem,
+            this.собратьСнимокToolStripMenuItem});
             this.сборкаToolStripMenuItem.Name = "сборкаToolStripMenuItem";
             this.сборкаToolStripMenuItem.Size = new System.Drawing.Size(89, 20);
             this.сборкаToolStripMenuItem.Text = "Компиляция";
@@ -224,7 +226,7 @@
             // 
             this.компиляцияToolStripMenuItem.Name = "компиляцияToolStripMenuItem";
             this.компиляцияToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F5;
-            this.компиляцияToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
+            this.компиляцияToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
             this.компиляцияToolStripMenuItem.Text = "Компиляция";
             this.компиляцияToolStripMenuItem.Click += new System.EventHandler(this.компиляцияToolStripMenuItem_Click);
             // 
@@ -404,6 +406,13 @@
             this.textBox1.TabIndex = 3;
             this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
             // 
+            // собратьСнимокToolStripMenuItem
+            // 
+            this.собратьСнимокToolStripMenuItem.Name = "собратьСнимокToolStripMenuItem";
+            this.собратьСнимокToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
+            this.собратьСнимокToolStripMenuItem.Text = "Собрать снимок";
+            this.собратьСнимокToolStripMenuItem.Click += new System.EventHandler(this.собратьСнимокToolStripMenuItem_Click);
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -468,6 +477,7 @@
         private System.Windows.Forms.ToolStripButton toolredo;
         private System.Windows.Forms.ToolStripMenuItem сборкаToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem компиляцияToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem собратьСнимокToolStripMenuItem;
     }
 }
 

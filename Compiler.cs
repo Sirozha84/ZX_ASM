@@ -8,14 +8,31 @@ namespace ZXASM
 {
     static class Compiler
     {
+        static int Adress;
+        static List<byte> codes = new List<byte>();
 
-        public static void Compile(string Text)
+        public static void Compile(string Text, string FileName, int Out)
         {
+            Adress = 25000;
             Label.List.Clear();
             Token.List.Clear();
 
-            Token.Adress = 25000;
+            Token.CurAdress = Adress;
             Parsing(Text);
+            //if (Out == 0)...             //Просто бинарник
+            if (Out == 1) SaveSNA(FileName);    //Сохранение снэпшота
+            //if (Out == 2) SaveSNA();... //И, видимо, открытие этого снэпшота
+        }
+
+        static void SaveSNA(string FileName)
+        {
+            byte[] SNA = new byte[49179];
+            for (int i = 0; i < codes.Count; i++) SNA[Adress + i + 27 - 16384] = codes[i];
+            SNA[23] = 253;
+            SNA[24] = 255;
+            SNA[49177] = (byte)(Adress / 256);
+            SNA[49178] = (byte)(Adress % 256);
+            System.IO.File.WriteAllBytes(FileName + ".sna", SNA);
         }
 
         static void Parsing(string Text)
@@ -32,7 +49,7 @@ namespace ZXASM
 #if DEBUG
             Console.WriteLine("Компиляция n" + Properties.Settings.Default.Runs +":");
 #endif
-            List<byte> codes = new List<byte>();
+            codes.Clear();
             
             //Второй прогон
             foreach (Token t in Token.List)
@@ -44,6 +61,7 @@ namespace ZXASM
                 }
                 foreach (byte b in t.Code) codes.Add(b);
 #if DEBUG
+                Console.Write(t.Adress + " - ");
                 foreach (byte b in t.Code) Console.Write(b + " ");
                 Console.Write(t.Label);
                 Console.WriteLine();

@@ -10,12 +10,14 @@ namespace ZXASM
     {
         public static List<Token> List = new List<Token>();
 
-        public static int Adress;
+        public static int CurAdress;
+        public int Adress;
         public byte[] Code;
         public bool IsComand = false;
 
-        public string Label;   //Метка, указанная в команде
-        int To;         //Адрес, куда запишется адрес метки (+ к первому адресу команды)
+        public string Label;    //Метка, указанная в команде
+        int To;                 //Адрес, куда запишется адрес метки (+ к первому адресу команды)
+        bool Rel = false;       //Относительный переход?
 
         public Token(string Str)
         {
@@ -28,9 +30,10 @@ namespace ZXASM
                 ToCode(Str);
                 if (Code != null)
                 {
+                    Adress = CurAdress;
                     List.Add(this);
                     if (Code != null)
-                        Adress += Code.Count();
+                        CurAdress += Code.Count();
                 }
             }
         }
@@ -52,7 +55,7 @@ namespace ZXASM
                         if (Str[1] == "b")
                         {
                             if (ReadNum(Str[2], out NN)) { Code = new byte[] { 6, B1(NN) }; };                  //LD B,NN
-                            if (Str[2] == "b") Code = new byte[] { 64 };                                        //AD B,B
+                            if (Str[2] == "b") Code = new byte[] { 64 };                                        //LD B,B
                             if (Str[2] == "c") Code = new byte[] { 65 };                                        //LD B,C
                             if (Str[2] == "d") Code = new byte[] { 66 };                                        //LD B,D
                             if (Str[2] == "e") Code = new byte[] { 67 };                                        //LD B,E
@@ -72,6 +75,7 @@ namespace ZXASM
                     if (Str.Count() == 2)
                     {
                         if (Str[1] == "b") Code = new byte[] { 4 };                                             //INC B
+                        if (Str[1] == "hl") Code = new byte[] { 35 };                                           //INC HL
                         if (Str[1] == "a") Code = new byte[] { 60 };                                            //INC A
                     }
                     break;
@@ -106,21 +110,103 @@ namespace ZXASM
                         }
                     }
                     break;
+                case "cp":
+                    if (Str.Count() == 2)
+                    {
+                        if (Str[1] == "c") Code = new byte[] { 185 };                                           //CP C
+                        if (ReadNum(Str[1], out NN)) { Code = new byte[] { 254, B1(NN) }; };                    //CP N
+                    }
+                    break;
+                case "and":
+                    if (Str.Count() == 2)
+                    {
+                        if (Str[1] == "c") Code = new byte[] { 161 };                                           //AND C
+                        if (ReadNum(Str[1], out NN)) { Code = new byte[] { 230, B1(NN) }; };                    //AND N
+                    }
+                    break;
+                case "or":
+                    if (Str.Count() == 2)
+                    {
+                        if (Str[1] == "c") Code = new byte[] { 177 };                                           //OR C
+                        if (ReadNum(Str[1], out NN)) { Code = new byte[] { 246, B1(NN) }; };                    //OR N
+                    }
+                    break;
+                case "xor":
+                    if (Str.Count() == 2)
+                    {
+                        if (Str[1] == "c") Code = new byte[] { 169 };                                           //XOR C
+                        if (Str[1] == "a") Code = new byte[] { 175 };                                           //XOR C
+                        if (ReadNum(Str[1], out NN)) { Code = new byte[] { 238, B1(NN) }; };                    //XOR N
+                    }
+                    break;
+                case "jp":
+                    if (Str.Count() == 2)
+                    {
+                        switch (Str[1])
+                        {
+                            case "(hl)": Code = new byte[] { 233 }; break;                                      //JP (HL)
+                            case "(ix)": Code = new byte[] { 221, 233 }; break;                                 //JP (IX)
+                            case "(iy)": Code = new byte[] { 253, 233 }; break;                                 //JP (IY)
+                            default: Code = new byte[] { 195, 0, 0 }; To = 1; Label = Str[1]; break;            //JP NN
+                        }
+                    }
+                    if (Str.Count() == 3)
+                    {
+
+                    }
+                    break;
+                case "jr":
+                    if (Str.Count() == 2)
+                    {
+                        Code = new byte[] { 24, 0 }; To = 1; Label = Str[1]; Rel = true; break;                 //JR S
+                    }
+                    break;
+                case "djnz":
+                    if (Str.Count() == 2)
+                    {
+                        Code = new byte[] { 16, 0 }; To = 1; Label = Str[1]; Rel = true; break;                 //DJNZ S
+                    }
+                    break;
+                case "call":
+                    if (Str.Count() == 2)
+                    {
+                        switch (Str[1])
+                        {
+                            //case "(hl)": Code = new byte[] { 233 }; break;
+                            //case "(ix)": Code = new byte[] { 221, 233 }; break;
+                            //case "(iy)": Code = new byte[] { 253, 233 }; break;
+                            default: Code = new byte[] { 205, 0, 0 }; To = 1; Label = Str[1]; break;            //CALL NN
+                        }
+                    }
+                    if (Str.Count() == 3)
+                    {
+
+                    }
+                    break;
+
                 case "nop": Code = new byte[] { 0 }; break;
                 case "ret": Code = new byte[] { 201 }; break;
                 case "reti": Code = new byte[] { 239, 77 }; break;
                 case "di": Code = new byte[] { 243 }; break;
                 case "ei": Code = new byte[] { 251 }; break;
-                case "jp":
-                    if (Str.Count() == 2) { Code = new byte[] { 195, 0, 0 }; To = 1; Label = Str[1]; }
-                    break;
             }
         }
 
         public void SetAdress(int adr)
         {
-            Code[To] = (byte)(adr % 256);
-            Code[To + 1] = (byte)(adr / 256);
+            if (Rel)
+            {
+                int jr = adr - Adress - 2;
+                if (jr >= 0)
+                    Code[To] = (byte)jr;
+                else
+                    Code[To] = (byte)(256 + jr);
+            }
+            else
+            {
+                Code[To] = (byte)(adr % 256);
+                Code[To + 1] = (byte)(adr / 256);
+            }
         }
 
         bool ReadNum(string str, out ushort res)
