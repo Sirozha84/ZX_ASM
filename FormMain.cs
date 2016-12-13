@@ -101,5 +101,10 @@ namespace ZXASM
         {
             Compiler.Compile(textBox1.Text, @"c:\Users\sg\Desktop\test", 1);
         }
+
+        private void сайтРазработчикаToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process.Start(Program.Url);
+        }
     }
 }

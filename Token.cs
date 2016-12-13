@@ -11,6 +11,7 @@ namespace ZXASM
         public static List<Token> List = new List<Token>();
 
         public static int CurAdress;
+
         public int Adress;
         public byte[] Code;
         public bool IsComand = false;
@@ -27,14 +28,18 @@ namespace ZXASM
             Str = Str.Trim(' ').ToLower();
             if (Str != "")
             {
-                ToCode(Str);
-                if (Code != null)
-                {
-                    Adress = CurAdress;
-                    List.Add(this);
+                //try
+                //{
+                    ToCode(Str);
                     if (Code != null)
-                        CurAdress += Code.Count();
-                }
+                    {
+                        Adress = CurAdress;
+                        List.Add(this);
+                        if (Code != null)
+                            CurAdress += Code.Count();
+                    }
+                //}
+                //catch (Exception e) { System.Windows.Forms.MessageBox.Show("Ошибка в строке \n" + e.Message, "Ошибка компиляции"); }
             }
         }
 
@@ -48,27 +53,34 @@ namespace ZXASM
                 case "ld":
                     if (Str.Count() == 3)
                     {
-                        if (Str[1] == "a")
+                        switch (Str[1])
                         {
-                            if (ReadAdr(Str[2], out NN)) { Code = new byte[] { 58, B1(NN), B2(NN) }; };         //LD A,(NN)
+                            case "a":
+                                if (ReadNum(Str[2], out NN)) { Code = new byte[] { 62, B1(NN) }; };                 //LD A,N
+                                if (Str[2] == "b") Code = new byte[] { 120 };                                       //LD A,B
+                                if (ReadAdr(Str[2], out NN)) { Code = new byte[] { 58, B1(NN), B2(NN) }; };         //LD A,(NN)
+                                break;
+                            case "b":
+                                if (ReadNum(Str[2], out NN)) { Code = new byte[] { 6, B1(NN) }; };                  //LD B,NN
+                                if (Str[2] == "b") Code = new byte[] { 64 };                                        //LD B,B
+                                if (Str[2] == "c") Code = new byte[] { 65 };                                        //LD B,C
+                                if (Str[2] == "d") Code = new byte[] { 66 };                                        //LD B,D
+                                if (Str[2] == "e") Code = new byte[] { 67 };                                        //LD B,E
+                                if (Str[2] == "h") Code = new byte[] { 68 };                                        //LD B,H
+                                if (Str[2] == "l") Code = new byte[] { 69 };                                        //LD B,L
+                                if (Str[2] == "(hl)") Code = new byte[] { 70 };                                     //LD B,(HL)
+                                if (Str[2] == "a") Code = new byte[] { 71 };                                        //LD B,A
+                                break;
+                            case "hl":
+                                if (ReadNum(Str[2], out NN)) { Code = new byte[] { 33, B1(NN), B2(NN) }; };         //...........
+                                break;
+                            default:
+                                throw new ArgumentException("\"" + Str[1] + "\" не является допустимым регистром");
                         }
-                        if (Str[1] == "b")
-                        {
-                            if (ReadNum(Str[2], out NN)) { Code = new byte[] { 6, B1(NN) }; };                  //LD B,NN
-                            if (Str[2] == "b") Code = new byte[] { 64 };                                        //LD B,B
-                            if (Str[2] == "c") Code = new byte[] { 65 };                                        //LD B,C
-                            if (Str[2] == "d") Code = new byte[] { 66 };                                        //LD B,D
-                            if (Str[2] == "e") Code = new byte[] { 67 };                                        //LD B,E
-                            if (Str[2] == "h") Code = new byte[] { 68 };                                        //LD B,H
-                            if (Str[2] == "l") Code = new byte[] { 69 };                                        //LD B,L
-                            if (Str[2] == "(hl)") Code = new byte[] { 70 };                                     //LD B,(HL)
-                            if (Str[2] == "a") Code = new byte[] { 71 };                                        //LD B,A
-                        }
-                        if (Str[1] == "hl")
-                        {
-                            if (ReadNum(Str[2], out NN)) { Code = new byte[] { 33, B1(NN), B2(NN) }; };
-                        }
+                        if (Code == null) throw new ArgumentException("\"" + Str[2] + "\" не является допустимым числом или регистром");
                     }
+                    if (Str.Count() < 3) throw new ArgumentException("Не достаточно параметров в команде LD");
+                    if (Str.Count() > 3) throw new ArgumentException("Слишком много параметров в команде LD");
                     break;
                 case "exx": Code = new byte[] { 217 }; break;
                 case "inc":
@@ -180,7 +192,7 @@ namespace ZXASM
                     }
                     if (Str.Count() == 3)
                     {
-
+                        //по условиям
                     }
                     break;
 
@@ -189,6 +201,16 @@ namespace ZXASM
                 case "reti": Code = new byte[] { 239, 77 }; break;
                 case "di": Code = new byte[] { 243 }; break;
                 case "ei": Code = new byte[] { 251 }; break;
+                case "defb":
+                    Code = new byte[Str.Length - 1];
+                    for (int i = 0; i < Str.Length - 1; i++)
+                    {
+                        ReadNum(Str[i + 1], out NN);
+                        Code[i] = B1(NN);
+                    }
+                    break;
+                default:
+                    throw new ArgumentException("Не известная команда \"" + Str[0] + "\"");
             }
         }
 
@@ -211,9 +233,9 @@ namespace ZXASM
 
         bool ReadNum(string str, out ushort res)
         {
-            //if (str[0] == '#') //
-            return (ushort.TryParse(str, out res));
-            //else throw Exception.
+            bool isNum = (ushort.TryParse(str, out res));
+            if (str[0] == '#') { isNum = true; } //Тут переведём из 16-и в 10
+            return isNum;
         }
 
         bool ReadAdr(string str, out ushort res)
@@ -225,6 +247,8 @@ namespace ZXASM
             return false;
             
             //else throw Exception.
+
+            //Ещё надо проверить не метка ли указана в адресе
         }
 
         byte B1(ushort Num) { return (byte)(Num % 256); }
