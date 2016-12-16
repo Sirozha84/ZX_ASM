@@ -8,26 +8,34 @@ namespace ZXASM
 {
     static class Compiler
     {
-        static int Adress;
+        public static int StartAdress;
         static List<byte> codes = new List<byte>();
 
         public static void Compile(string Text, string FileName, int Out)
         {
-            Adress = 25000;
+
+#if DEBUG
+            Console.WriteLine("Компиляция n" + Properties.Settings.Default.Runs + ":");
+#endif
+
+            StartAdress = 25000;
+            Token.CurAdress = StartAdress;
             Label.List.Clear();
             Token.List.Clear();
             Modules.List.Clear();
 
-            Token.CurAdress = Adress;
+            Parsing(Text);
+#if DEBUG
+            Console.WriteLine("Бинарник (" + codes.Count + " байт):");
+            foreach (byte b in codes) Console.Write(b + " ");
+            Console.WriteLine();
+#endif
 
-            if (Parsing(Text))
+            if (Error.List.Count == 0)
             {
-                Console.WriteLine("Компиляция прошла успешно!");
 
 #if DEBUG
-                Console.WriteLine("Бинарник (" + codes.Count + " байт):");
-                foreach (byte b in codes) Console.Write(b + " ");
-                Console.WriteLine();
+                Console.WriteLine("Компиляция прошла успешно!");
 #endif
 
             }
@@ -37,6 +45,8 @@ namespace ZXASM
                 foreach (Error er in Error.List)
                     Console.WriteLine(er.StringNum + ": " + er.String + "\n          " + er.Message);
             }
+
+            //Далее делаем что-то с получившимся бинарником
             //if (Out == 0)...             //Просто бинарник
             if (Out == 1) SaveSNA(FileName);    //Сохранение снэпшота
             //if (Out == 2) SaveSNA();... //И, видимо, открытие этого снэпшота
@@ -48,26 +58,20 @@ namespace ZXASM
         static void SaveSNA(string FileName)
         {
             byte[] SNA = new byte[49179];
-            for (int i = 0; i < codes.Count; i++) SNA[Adress + i + 27 - 16384] = codes[i];
+            for (int i = 0; i < codes.Count; i++) SNA[StartAdress + i + 27 - 16384] = codes[i];
             SNA[23] = 253;
             SNA[24] = 255;
-            SNA[49177] = (byte)(Adress / 256);
-            SNA[49178] = (byte)(Adress % 256);
+            SNA[49177] = (byte)(StartAdress / 256);
+            SNA[49178] = (byte)(StartAdress % 256);
             System.IO.File.WriteAllBytes(FileName + ".sna", SNA);
         }
 
-        static public bool Parsing(string Text)
+        static public void Parsing(string Text)
         {
-
-#if DEBUG
-            Console.WriteLine("Компиляция n" + Properties.Settings.Default.Runs + ":");
-#endif
-
             //Разбивка текста на строки
             string[] Strings = Text.Replace("\r\n", "\n").Split(new[] { '\r', '\n' });
             //Первый прогон (разбивка текста программы на токены)
             int num = 0;
-            bool isOK = true;
             Error.Clear();
             foreach (string str in Strings)
             {
@@ -77,10 +81,20 @@ namespace ZXASM
                     Label label = new Label(str);
                     Token token = new Token(num, str);
                     //if (token.IsComand) Token.List.Add(token);
+
+#if DEBUG
+                    if (token.Code != null)
+                    {
+                        Console.Write(token.Adress + " - ");
+                        foreach (byte b in token.Code) Console.Write(b + " ");
+                        if (token.Label != null) Console.Write("   Label: " + token.Label);
+                        Console.WriteLine();
+                    }
+#endif
+
                 }
                 catch (Exception e)
                 {
-                    isOK = false;
                     Error.List.Add(new Error("this", num, str, e.Message));
                 }
             }
@@ -98,25 +112,14 @@ namespace ZXASM
                     }
                     catch (Exception e)
                     {
-                        isOK = false;
                         Error.List.Add(new Error("this", t.NumString, t.String, e.Message));
                     }
                 }
                 foreach (byte b in t.Code) codes.Add(b);
-
-#if DEBUG
-                Console.Write(t.Adress + " - ");
-                foreach (byte b in t.Code) Console.Write(b + " ");
-                if (t.Label != null) Console.Write("   Label: " + t.Label);
-                Console.WriteLine();
-#endif
-
             }
             //Добавление внешних модулей
             foreach (Modules module in Modules.List)
                 module.Include();
-
-            return isOK;
         }
     }
 }

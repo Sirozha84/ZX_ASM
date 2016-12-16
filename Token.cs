@@ -10,7 +10,8 @@ namespace ZXASM
     {
         public static List<Token> List = new List<Token>();
 
-        public static int CurAdress;
+        //public static int StartAdress;  //Адрес начала прграммы
+        public static int CurAdress;    //Текущий адрес
 
         public int Adress;
         public byte[] Code;
@@ -53,7 +54,8 @@ namespace ZXASM
             {
                 if (List.Count > 0) throw new ArgumentException("Директива ORG может использоваться только в начале программы");
                 ParamTest(Str, "ORG", 2);
-                CurAdress = ReadNum(Str[1]);
+                Compiler.StartAdress = ReadNum(Str[1]);
+                CurAdress = Compiler.StartAdress;
                 return;
             }
             if (Str[0] == "use")                                                                                //ORG
