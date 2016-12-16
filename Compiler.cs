@@ -37,74 +37,77 @@ namespace ZXASM
 
         static void Parsing(string Text)
         {
+
+#if DEBUG
+            Console.WriteLine("Компиляция n" + Properties.Settings.Default.Runs + ":");
+#endif
+
+            //Разбивка текста на строки
             string[] Strings = Text.Replace("\r\n", "\n").Split(new[] { '\r', '\n' });
-            //Первый прогон
+            //Первый прогон (разбивка текста программы на токены)
             int num = 0;
             bool isOK = true;
             Error.Clear();
             foreach (string str in Strings)
             {
                 num++;
-                Label label = new Label(str);
                 try
                 {
-                    Token token = new Token(str);
+                    Label label = new Label(str);
+                    Token token = new Token(num, str);
                     //if (token.IsComand) Token.List.Add(token);
                 }
                 catch (Exception e)
                 {
                     isOK = false;
-                    Error.List.Add(new Error("this", num, e.Message));
+                    Error.List.Add(new Error("this", num, str, e.Message));
                 }
             }
-
-#if DEBUG
-            Console.WriteLine("Компиляция n" + Properties.Settings.Default.Runs + ":");
-#endif
-
+            //Второй прогон (подстановка реальных адресов вместо меток)
             codes.Clear();
-
-            //Второй прогон
             foreach (Token t in Token.List)
             {
                 if (t.Label != null)
                 {
-                    Label l = Label.List.Find(o => o.Name == t.Label);
-                    if (l != null) t.SetAdress(l.Adress);
+                    try
+                    {
+                        Label l = Label.List.Find(o => o.Name == t.Label);
+                        if (l != null) t.SetAdress(l.Adress);
+                        else throw new ArgumentException("Метка \"" + t.Label + "\" не найдена");
+                    }
+                    catch (Exception e)
+                    {
+                        isOK = false;
+                        Error.List.Add(new Error("this", t.NumString, t.String, e.Message));
+                    }
                 }
                 foreach (byte b in t.Code) codes.Add(b);
 
 #if DEBUG
                 Console.Write(t.Adress + " - ");
                 foreach (byte b in t.Code) Console.Write(b + " ");
-                Console.Write(t.Label);
+                Console.Write("   Label: " +t.Label);
                 Console.WriteLine();
 #endif
 
             }
 
 #if DEBUG
-            Console.WriteLine("Бинарник:");
+            Console.WriteLine("Бинарник (" + codes.Count + " байт):");
             foreach (byte b in codes) Console.Write(b + " ");
-            Console.WriteLine();
-            Console.WriteLine("Размер бинарного кода: " + codes.Count + " байт.");
             Console.WriteLine();
 #endif
             Properties.Settings.Default.Runs++; //Счётчик запусков, так, по приколу
             Properties.Settings.Default.Bytes += codes.Count; //И счётчик кода всего, обожаю статистику :-)
 
             //Результат компиляции
-            if (isOK) System.Windows.Forms.MessageBox.Show("Компиляция прошла успешно!", "Компиляция");
+            if (isOK) Console.WriteLine("Компиляция прошла успешно!");
             else
             {
-                string str = "Компиляция завершилась ошибками:\n";
+                Console.WriteLine("Компиляция завершилась ошибками:");
                 foreach (Error er in Error.List)
-                {
-                    str += er.StringNum.ToString("0:   " + er.Message + "\n");
-                }
-                System.Windows.Forms.MessageBox.Show(str, "Компиляция");
+                    Console.WriteLine(er.StringNum + ": " + er.String + "\n          " + er.Message);
             }
         }
     }
 }
-

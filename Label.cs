@@ -25,6 +25,8 @@ namespace ZXASM
                     Adress = Token.CurAdress;
                     List.Add(this);
                 }
+                else
+                    throw new ArgumentException("Метка \"" + Str + "\" уже существует");
             }
         }
     }

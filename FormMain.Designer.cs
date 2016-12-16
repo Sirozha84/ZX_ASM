@@ -50,6 +50,8 @@
             this.собратьСнимокToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.справкаToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuhelp = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
+            this.сайтРазработчикаToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.menuabout = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
@@ -66,8 +68,6 @@
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.textBox1 = new System.Windows.Forms.TextBox();
-            this.сайтРазработчикаToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -260,6 +260,18 @@
             this.menuhelp.Text = "Просмотр справки";
             this.menuhelp.Click += new System.EventHandler(this.menuhelp_Click);
             // 
+            // toolStripMenuItem2
+            // 
+            this.toolStripMenuItem2.Name = "toolStripMenuItem2";
+            this.toolStripMenuItem2.Size = new System.Drawing.Size(195, 6);
+            // 
+            // сайтРазработчикаToolStripMenuItem
+            // 
+            this.сайтРазработчикаToolStripMenuItem.Name = "сайтРазработчикаToolStripMenuItem";
+            this.сайтРазработчикаToolStripMenuItem.Size = new System.Drawing.Size(198, 22);
+            this.сайтРазработчикаToolStripMenuItem.Text = "Сайт разработчика";
+            this.сайтРазработчикаToolStripMenuItem.Click += new System.EventHandler(this.сайтРазработчикаToolStripMenuItem_Click);
+            // 
             // toolStripSeparator4
             // 
             this.toolStripSeparator4.Name = "toolStripSeparator4";
@@ -407,7 +419,9 @@
             this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBox1.Font = new System.Drawing.Font("Lucida Console", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.textBox1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(32)))), ((int)(((byte)(32)))));
+            this.textBox1.Font = new System.Drawing.Font("Consolas", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.textBox1.ForeColor = System.Drawing.Color.White;
             this.textBox1.Location = new System.Drawing.Point(0, 52);
             this.textBox1.MaxLength = 65535;
             this.textBox1.Multiline = true;
@@ -416,18 +430,6 @@
             this.textBox1.Size = new System.Drawing.Size(535, 312);
             this.textBox1.TabIndex = 3;
             this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
-            // 
-            // сайтРазработчикаToolStripMenuItem
-            // 
-            this.сайтРазработчикаToolStripMenuItem.Name = "сайтРазработчикаToolStripMenuItem";
-            this.сайтРазработчикаToolStripMenuItem.Size = new System.Drawing.Size(198, 22);
-            this.сайтРазработчикаToolStripMenuItem.Text = "Сайт разработчика";
-            this.сайтРазработчикаToolStripMenuItem.Click += new System.EventHandler(this.сайтРазработчикаToolStripMenuItem_Click);
-            // 
-            // toolStripMenuItem2
-            // 
-            this.toolStripMenuItem2.Name = "toolStripMenuItem2";
-            this.toolStripMenuItem2.Size = new System.Drawing.Size(195, 6);
             // 
             // FormMain
             // 
