@@ -49,46 +49,48 @@ namespace ZXASM
             string[] Str = str.Split(new char[] { ' ', ',' }, StringSplitOptions.RemoveEmptyEntries);
             IsComand = true;
             ushort NN;
+            if (Str[0] == "org")                                                                            //ORG
+            {
+                if (List.Count > 0) throw new ArgumentException("Директива ORG может использоваться только в начале программы");
+                ParamTest(Str, "ORG", 2);
+                CurAdress = ReadNum(Str[1]);
+                return;
+            }
             if (Str[0] == "ld")
             {
-                if (Str.Count() == 3)
+                ParamTest(Str, "LD", 3);
+                if (Str[1] == "a")
                 {
-                    if (Str[1] == "a")
-                    {
-                        if (Str[2] == "b") { Code = new byte[] { 120 }; return; }                               //LD A,B
-                        if (Str[2] == "c") { Code = new byte[] { 121 }; return; }                               //LD A,C
-                        if (Str[2] == "d") { Code = new byte[] { 122 }; return; }                               //LD A,D
-                        if (Str[2] == "e") { Code = new byte[] { 123 }; return; }                               //LD A,E
-                        if (Str[2] == "h") { Code = new byte[] { 124 }; return; }                               //LD A,H
-                        if (Str[2] == "l") { Code = new byte[] { 125 }; return; }                               //LD A,L
-                        if (Str[2] == "(hl)") { Code = new byte[] { 126 }; return; }                            //LD A,(HL)
-                        if (Str[2] == "a") { Code = new byte[] { 127 }; return; }                               //LD A,A
-                        To = 1;
-                        if (ReadNum(Str[2], out NN)) { Code = new byte[] { 62, B1(NN) }; return; };             //LD A,N
-                        if (ReadAdr(Str[2], out NN)) { Code = new byte[] { 58, B1(NN), B2(NN) }; return; };     //LD A,(NN) (только в с регистром A)
-                    }
-                    if (Str[1] == "b")
-                    {
-                        if (Str[2] == "b") { Code = new byte[] { 64 }; return; }                                //LD B,B
-                        if (Str[2] == "c") { Code = new byte[] { 65 }; return; }                                //LD B,C
-                        if (Str[2] == "d") { Code = new byte[] { 66 }; return; }                                //LD B,D
-                        if (Str[2] == "e") { Code = new byte[] { 67 }; return; }                                //LD B,E
-                        if (Str[2] == "h") { Code = new byte[] { 68 }; return; }                                //LD B,H
-                        if (Str[2] == "l") { Code = new byte[] { 69 }; return; }                                //LD B,L
-                        if (Str[2] == "(hl)") { Code = new byte[] { 70 }; return; }                             //LD B,(HL)
-                        if (Str[2] == "a") { Code = new byte[] { 71 }; return; }                                //LD B,A
-                        To = 1;
-                        if (ReadNum(Str[2], out NN)) { Code = new byte[] { 6, B1(NN) }; };                      //LD B,N
-                    }
-                    if (Str[1] == "hl")
-                    {
-                        if (ReadNum(Str[2], out NN)) { Code = new byte[] { 33, B1(NN), B2(NN) }; };             //LD HL, NN
-                    }
-                    //throw new ArgumentException("\"" + Str[1] + "\" не является допустимым регистром");
+                    if (Str[2] == "b") { Code = new byte[] { 120 }; return; }                               //LD A,B
+                    if (Str[2] == "c") { Code = new byte[] { 121 }; return; }                               //LD A,C
+                    if (Str[2] == "d") { Code = new byte[] { 122 }; return; }                               //LD A,D
+                    if (Str[2] == "e") { Code = new byte[] { 123 }; return; }                               //LD A,E
+                    if (Str[2] == "h") { Code = new byte[] { 124 }; return; }                               //LD A,H
+                    if (Str[2] == "l") { Code = new byte[] { 125 }; return; }                               //LD A,L
+                    if (Str[2] == "(hl)") { Code = new byte[] { 126 }; return; }                            //LD A,(HL)
+                    if (Str[2] == "a") { Code = new byte[] { 127 }; return; }                               //LD A,A
+                    To = 1;
+                    if (ReadNum(Str[2], out NN)) { Code = new byte[] { 62, B1(NN) }; return; };             //LD A,N
+                    if (ReadAdr(Str[2], out NN)) { Code = new byte[] { 58, B1(NN), B2(NN) }; return; };     //LD A,(NN) (только в с регистром A)
                 }
-                if (Code == null) throw new ArgumentException("\"" + Str[2] + "\" не является допустимым числом или регистром");
-                if (Str.Count() < 3) throw new ArgumentException("Не достаточно параметров в команде LD");
-                if (Str.Count() > 3) throw new ArgumentException("Слишком много параметров в команде LD");
+                if (Str[1] == "b")
+                {
+                    if (Str[2] == "b") { Code = new byte[] { 64 }; return; }                                //LD B,B
+                    if (Str[2] == "c") { Code = new byte[] { 65 }; return; }                                //LD B,C
+                    if (Str[2] == "d") { Code = new byte[] { 66 }; return; }                                //LD B,D
+                    if (Str[2] == "e") { Code = new byte[] { 67 }; return; }                                //LD B,E
+                    if (Str[2] == "h") { Code = new byte[] { 68 }; return; }                                //LD B,H
+                    if (Str[2] == "l") { Code = new byte[] { 69 }; return; }                                //LD B,L
+                    if (Str[2] == "(hl)") { Code = new byte[] { 70 }; return; }                             //LD B,(HL)
+                    if (Str[2] == "a") { Code = new byte[] { 71 }; return; }                                //LD B,A
+                    To = 1;
+                    if (ReadNum(Str[2], out NN)) { Code = new byte[] { 6, B1(NN) }; };                      //LD B,N
+                }
+                if (Str[1] == "hl")
+                {
+                    if (ReadNum(Str[2], out NN)) { Code = new byte[] { 33, B1(NN), B2(NN) }; };             //LD HL, NN
+                }
+                //if (Code == null) throw new ArgumentException("\"" + Str[2] + "\" не является допустимым числом или регистром");
             }
             if (Str[0] == "exx")
             {
@@ -270,7 +272,20 @@ namespace ZXASM
         }
 
         /// <summary>
-        /// Чтение NN
+        /// Чтение NN (только числа)
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
+        ushort ReadNum(string str)
+        {
+            ushort res;
+            if (ushort.TryParse(str, out res))
+                return res;
+            throw new ArgumentException(str + " не является числом");
+        }
+
+        /// <summary>
+        /// Чтение NN (числа, или метки)
         /// </summary>
         /// <param name="str"></param>
         /// <param name="res"></param>
@@ -332,6 +347,18 @@ namespace ZXASM
             }
             return dec;
         }
-        
+
+        /// <summary>
+        /// Тест на количество параметров
+        /// </summary>
+        /// <param name="Str"></param>
+        /// <param name="Command"></param>
+        /// <param name="Params"></param>
+        void ParamTest(string[] Str, string Command, int Params)
+        {
+            if (Str.Count() < Params) throw new ArgumentException("Не достаточно параметров в команде " + Command);
+            if (Str.Count() > Params) throw new ArgumentException("Слишком много параметров в команде " + Command);
+        }
+
     }
 }

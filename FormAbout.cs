@@ -16,7 +16,7 @@ namespace ZXASM
             Text = "О " + Application.ProductName;
             label1.Text = Application.ProductName;
             label2.Text = "Версия: " + Application.ProductVersion;
-            label3.Text = "Автор программы: Сергей гордеев";
+            label3.Text = "Автор программы: Сергей Гордеев";
             linkLabel1.Text = Program.Site;
         }
 

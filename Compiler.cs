@@ -86,7 +86,7 @@ namespace ZXASM
 #if DEBUG
                 Console.Write(t.Adress + " - ");
                 foreach (byte b in t.Code) Console.Write(b + " ");
-                Console.Write("   Label: " +t.Label);
+                if (t.Label != null) Console.Write("   Label: " +t.Label);
                 Console.WriteLine();
 #endif
 
