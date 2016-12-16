@@ -12,7 +12,7 @@ namespace ZXASM
         static bool Changed;
 
         //Данные проекта
-        static string FileName;
+        public static string FileName;
         public static string Text;
 
         //История

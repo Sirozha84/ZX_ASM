@@ -16,12 +16,33 @@ namespace ZXASM
             Adress = 25000;
             Label.List.Clear();
             Token.List.Clear();
+            Modules.List.Clear();
 
             Token.CurAdress = Adress;
-            Parsing(Text);
+
+            if (Parsing(Text))
+            {
+                Console.WriteLine("Компиляция прошла успешно!");
+
+#if DEBUG
+                Console.WriteLine("Бинарник (" + codes.Count + " байт):");
+                foreach (byte b in codes) Console.Write(b + " ");
+                Console.WriteLine();
+#endif
+
+            }
+            else
+            {
+                Console.WriteLine("Компиляция завершилась ошибками:");
+                foreach (Error er in Error.List)
+                    Console.WriteLine(er.StringNum + ": " + er.String + "\n          " + er.Message);
+            }
             //if (Out == 0)...             //Просто бинарник
             if (Out == 1) SaveSNA(FileName);    //Сохранение снэпшота
             //if (Out == 2) SaveSNA();... //И, видимо, открытие этого снэпшота
+
+            Properties.Settings.Default.Runs++; //Счётчик запусков, так, по приколу
+            Properties.Settings.Default.Bytes += codes.Count; //И счётчик кода всего, обожаю статистику :-)
         }
 
         static void SaveSNA(string FileName)
@@ -35,7 +56,7 @@ namespace ZXASM
             System.IO.File.WriteAllBytes(FileName + ".sna", SNA);
         }
 
-        static void Parsing(string Text)
+        static public bool Parsing(string Text)
         {
 
 #if DEBUG
@@ -86,28 +107,16 @@ namespace ZXASM
 #if DEBUG
                 Console.Write(t.Adress + " - ");
                 foreach (byte b in t.Code) Console.Write(b + " ");
-                if (t.Label != null) Console.Write("   Label: " +t.Label);
+                if (t.Label != null) Console.Write("   Label: " + t.Label);
                 Console.WriteLine();
 #endif
 
             }
+            //Добавление внешних модулей
+            foreach (Modules module in Modules.List)
+                module.Include();
 
-#if DEBUG
-            Console.WriteLine("Бинарник (" + codes.Count + " байт):");
-            foreach (byte b in codes) Console.Write(b + " ");
-            Console.WriteLine();
-#endif
-            Properties.Settings.Default.Runs++; //Счётчик запусков, так, по приколу
-            Properties.Settings.Default.Bytes += codes.Count; //И счётчик кода всего, обожаю статистику :-)
-
-            //Результат компиляции
-            if (isOK) Console.WriteLine("Компиляция прошла успешно!");
-            else
-            {
-                Console.WriteLine("Компиляция завершилась ошибками:");
-                foreach (Error er in Error.List)
-                    Console.WriteLine(er.StringNum + ": " + er.String + "\n          " + er.Message);
-            }
+            return isOK;
         }
     }
 }
