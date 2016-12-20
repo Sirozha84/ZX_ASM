@@ -71,11 +71,13 @@ namespace ZXASM
                 Module.Add(Str[1]);
                 return;
             }
+            #region LD
             if (Str[0] == "ld")
             {
                 ParamTest(Str, "LD", 3);
                 if (Str[1] == "a")
                 {
+                    if (Str[2] == "a") { Code = new byte[] { 127 }; return; }                                   //LD A,A
                     if (Str[2] == "b") { Code = new byte[] { 120 }; return; }                                   //LD A,B
                     if (Str[2] == "c") { Code = new byte[] { 121 }; return; }                                   //LD A,C
                     if (Str[2] == "d") { Code = new byte[] { 122 }; return; }                                   //LD A,D
@@ -83,13 +85,13 @@ namespace ZXASM
                     if (Str[2] == "h") { Code = new byte[] { 124 }; return; }                                   //LD A,H
                     if (Str[2] == "l") { Code = new byte[] { 125 }; return; }                                   //LD A,L
                     if (Str[2] == "(hl)") { Code = new byte[] { 126 }; return; }                                //LD A,(HL)
-                    if (Str[2] == "a") { Code = new byte[] { 127 }; return; }                                   //LD A,A
                     To = 1;
                     if (ReadNum(Str[2], out NN)) { Code = new byte[] { 62, B1(NN) }; return; };                 //LD A,N
                     if (ReadAdr(Str[2], out NN)) { Code = new byte[] { 58, B1(NN), B2(NN) }; return; };         //LD A,(NN) (только в с регистром A)
                 }
                 if (Str[1] == "b")
                 {
+                    if (Str[2] == "a") { Code = new byte[] { 71 }; return; }                                    //LD B,A
                     if (Str[2] == "b") { Code = new byte[] { 64 }; return; }                                    //LD B,B
                     if (Str[2] == "c") { Code = new byte[] { 65 }; return; }                                    //LD B,C
                     if (Str[2] == "d") { Code = new byte[] { 66 }; return; }                                    //LD B,D
@@ -97,16 +99,81 @@ namespace ZXASM
                     if (Str[2] == "h") { Code = new byte[] { 68 }; return; }                                    //LD B,H
                     if (Str[2] == "l") { Code = new byte[] { 69 }; return; }                                    //LD B,L
                     if (Str[2] == "(hl)") { Code = new byte[] { 70 }; return; }                                 //LD B,(HL)
-                    if (Str[2] == "a") { Code = new byte[] { 71 }; return; }                                    //LD B,A
                     To = 1;
-                    if (ReadNum(Str[2], out NN)) { Code = new byte[] { 6, B1(NN) }; };                          //LD B,N
+                    if (ReadNum(Str[2], out NN)) { Code = new byte[] { 6, B1(NN) }; return; };                  //LD B,N
+                }
+                if (Str[1] == "c")
+                {
+                    if (Str[2] == "a") { Code = new byte[] { 79 }; return; }                                    //LD C,A
+                    if (Str[2] == "b") { Code = new byte[] { 72 }; return; }                                    //LD C,B
+                    if (Str[2] == "c") { Code = new byte[] { 73 }; return; }                                    //LD C,C
+                    if (Str[2] == "d") { Code = new byte[] { 74 }; return; }                                    //LD C,D
+                    if (Str[2] == "e") { Code = new byte[] { 75 }; return; }                                    //LD C,E
+                    if (Str[2] == "h") { Code = new byte[] { 76 }; return; }                                    //LD C,H
+                    if (Str[2] == "l") { Code = new byte[] { 77 }; return; }                                    //LD C,L
+                    if (Str[2] == "(hl)") { Code = new byte[] { 78 }; return; }                                 //LD C,(HL)
+                    To = 1;
+                    if (ReadNum(Str[2], out NN)) { Code = new byte[] { 14, B1(NN) }; return; };                 //LD C,N
+                }
+                if (Str[1] == "d")
+                {
+                    if (Str[2] == "a") { Code = new byte[] { 87 }; return; }                                    //LD D,A
+                    if (Str[2] == "b") { Code = new byte[] { 80 }; return; }                                    //LD D,B
+                    if (Str[2] == "c") { Code = new byte[] { 81 }; return; }                                    //LD D,C
+                    if (Str[2] == "d") { Code = new byte[] { 82 }; return; }                                    //LD D,D
+                    if (Str[2] == "e") { Code = new byte[] { 83 }; return; }                                    //LD D,E
+                    if (Str[2] == "h") { Code = new byte[] { 84 }; return; }                                    //LD D,H
+                    if (Str[2] == "l") { Code = new byte[] { 85 }; return; }                                    //LD D,L
+                    if (Str[2] == "(hl)") { Code = new byte[] { 86 }; return; }                                 //LD D,(HL)
+                    To = 1;
+                    if (ReadNum(Str[2], out NN)) { Code = new byte[] { 22, B1(NN) }; return; };                 //LD D,N
+                }
+                if (Str[1] == "e")
+                {
+                    if (Str[2] == "a") { Code = new byte[] { 95 }; return; }                                    //LD E,A
+                    if (Str[2] == "b") { Code = new byte[] { 88 }; return; }                                    //LD E,B
+                    if (Str[2] == "c") { Code = new byte[] { 89 }; return; }                                    //LD E,C
+                    if (Str[2] == "d") { Code = new byte[] { 90 }; return; }                                    //LD E,D
+                    if (Str[2] == "e") { Code = new byte[] { 91 }; return; }                                    //LD E,E
+                    if (Str[2] == "h") { Code = new byte[] { 92 }; return; }                                    //LD E,H
+                    if (Str[2] == "l") { Code = new byte[] { 93 }; return; }                                    //LD E,L
+                    if (Str[2] == "(hl)") { Code = new byte[] { 94 }; return; }                                 //LD E,(HL)
+                    To = 1;
+                    if (ReadNum(Str[2], out NN)) { Code = new byte[] { 30, B1(NN) }; return; };                 //LD E,N
+                }
+                if (Str[1] == "h")
+                {
+                    if (Str[2] == "a") { Code = new byte[] { 103 }; return; }                                   //LD H,A
+                    if (Str[2] == "b") { Code = new byte[] { 96 }; return; }                                    //LD H,B
+                    if (Str[2] == "c") { Code = new byte[] { 97 }; return; }                                    //LD H,C
+                    if (Str[2] == "d") { Code = new byte[] { 98 }; return; }                                    //LD H,D
+                    if (Str[2] == "e") { Code = new byte[] { 99 }; return; }                                    //LD H,E
+                    if (Str[2] == "h") { Code = new byte[] { 100 }; return; }                                   //LD H,H
+                    if (Str[2] == "l") { Code = new byte[] { 101 }; return; }                                   //LD H,L
+                    if (Str[2] == "(hl)") { Code = new byte[] { 102 }; return; }                                //LD H,(HL)
+                    To = 1;
+                    if (ReadNum(Str[2], out NN)) { Code = new byte[] { 38, B1(NN) }; return; };                 //LD H,N
+                }
+                if (Str[1] == "l")
+                {
+                    if (Str[2] == "a") { Code = new byte[] { 111 }; return; }                                   //LD L,A
+                    if (Str[2] == "b") { Code = new byte[] { 104 }; return; }                                   //LD L,B
+                    if (Str[2] == "c") { Code = new byte[] { 105 }; return; }                                   //LD L,C
+                    if (Str[2] == "d") { Code = new byte[] { 106 }; return; }                                   //LD L,D
+                    if (Str[2] == "e") { Code = new byte[] { 107 }; return; }                                   //LD L,E
+                    if (Str[2] == "h") { Code = new byte[] { 108 }; return; }                                   //LD L,H
+                    if (Str[2] == "l") { Code = new byte[] { 109 }; return; }                                   //LD L,L
+                    if (Str[2] == "(hl)") { Code = new byte[] { 110 }; return; }                                //LD L,(HL)
+                    To = 1;
+                    if (ReadNum(Str[2], out NN)) { Code = new byte[] { 46, B1(NN) }; return; };                 //LD L,N
                 }
                 if (Str[1] == "hl")
                 {
-                    if (ReadNum(Str[2], out NN)) { Code = new byte[] { 33, B1(NN), B2(NN) }; };                 //LD HL, NN
+                    if (ReadNum(Str[2], out NN)) { Code = new byte[] { 33, B1(NN), B2(NN) }; To = 1; };         //LD HL, NN
                 }
-                //if (Code == null) throw new ArgumentException("\"" + Str[2] + "\" не является допустимым числом или регистром");
+                if (Code == null) throw new ArgumentException("\"" + Str[1] + ","+ Str[2] + "\" не является допустимым сочетанием");
             }
+            #endregion
             if (Str[0] == "exx")
             {
                 Code = new byte[] { 217 };

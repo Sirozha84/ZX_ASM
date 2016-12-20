@@ -128,7 +128,12 @@ namespace ZXASM
                         //Здесь надо проверить есть ли точка, и если нет - подставить с названием текущего модуля
                         Label l = Label.List.Find(o => o.Name == t.Label);
                         if (l != null) t.SetAdress(l.Adress);
-                        else throw new ArgumentException("Метка \"" + t.Label + "\" не найдена");
+                        else
+                        {
+                            string lb = t.Label;
+                            if (lb.Contains("*.")) lb = lb.Replace("*.","");
+                            throw new ArgumentException("Метка \"" + lb + "\" не найдена");
+                        }
                     }
                     catch (Exception e)
                     {
