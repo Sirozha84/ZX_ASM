@@ -21,11 +21,18 @@ namespace ZXASM
         int To;                 //Адрес, куда запишется адрес метки (+ к первому адресу команды)
         bool Rel = false;       //Относительный переход?
 
-        public int NumString;          //Метаданные строки (номер, строка)
+        public string ModuleString;   //Метаданные строки (модуль, номер строки, строка)
+        public int NumString;          
         public string String;
 
-        public Token(int num, string Str)
+        /// <summary>
+        /// Распознание токена
+        /// </summary>
+        /// <param name="num"></param>
+        /// <param name="Str"></param>
+        public Token(string module, int num, string Str)
         {
+            ModuleString = module;
             NumString = num;
             String = Str;
             //Вычленяем строку с мнемоникой

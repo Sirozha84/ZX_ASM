@@ -9,10 +9,16 @@ namespace ZXASM
     class Label
     {
         public static List<Label> List = new List<Label>();
+        public string Module;
         public string Name;
         public int Adress;
 
-        public Label(string Str)
+        /// <summary>
+        /// Парсинг метки
+        /// </summary>
+        /// <param name="module">Имя модуля</param>
+        /// <param name="Str">Метка</param>
+        public Label(string module, string Str)
         {
             //Вычленяем строку с меткой
             if (Str.Contains(":"))
@@ -21,7 +27,8 @@ namespace ZXASM
                 Str = Str.Trim(' ', ':');
                 if (Str != "" & List.Find(o => o.Name == Str) == null)
                 {
-                    Name = Str;
+                    //Module = module;
+                    Name = module + "." + Str;
                     Adress = Token.CurAdress;
                     List.Add(this);
                 }

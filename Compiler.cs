@@ -23,8 +23,14 @@ namespace ZXASM
             Label.List.Clear();
             Token.List.Clear();
             Module.List.Clear();
+            Error.Clear();
 
-            Parsing(Text);
+            Parsing("*", Text);
+
+            InsertAdress();
+
+
+
 #if DEBUG
             Console.WriteLine("Бинарник (" + codes.Count + " байт):");
             foreach (byte b in codes) Console.Write(b + " ");
@@ -43,7 +49,7 @@ namespace ZXASM
             {
                 Console.WriteLine("Компиляция завершилась ошибками:");
                 foreach (Error er in Error.List)
-                    Console.WriteLine(er.StringNum + ": " + er.String + "\n          " + er.Message);
+                    Console.WriteLine(er.File + ": " + er.StringNum + ": " + er.String + "\n          " + er.Message);
             }
 
             //Далее делаем что-то с получившимся бинарником
@@ -66,20 +72,23 @@ namespace ZXASM
             System.IO.File.WriteAllBytes(FileName + ".sna", SNA);
         }
 
-        static public void Parsing(string Text)
+        /// <summary>
+        /// Парсинг текста
+        /// </summary>
+        /// <param name="module"></param>
+        /// <param name="Text"></param>
+        static public void Parsing(string module, string Text)
         {
             //Разбивка текста на строки
             string[] Strings = Text.Replace("\r\n", "\n").Split(new[] { '\r', '\n' });
-            //Первый прогон (разбивка текста программы на токены)
             int num = 0;
-            Error.Clear();
             foreach (string str in Strings)
             {
                 num++;
                 try
                 {
-                    Label label = new Label(str);
-                    Token token = new Token(num, str);
+                    Label label = new Label(module, str);
+                    Token token = new Token(module, num, str);
                     //if (token.IsComand) Token.List.Add(token);
 
 #if DEBUG
@@ -95,10 +104,19 @@ namespace ZXASM
                 }
                 catch (Exception e)
                 {
-                    Error.List.Add(new Error("this", num, str, e.Message));
+                    Error.List.Add(new Error(module, num, str, e.Message));
                 }
             }
-            //Второй прогон (подстановка реальных адресов вместо меток)
+            //Добавление внешних модулей
+            foreach (Module mod in Module.List)
+                mod.Include();
+        }
+
+        /// <summary>
+        /// Подстановка адресов вместо меток
+        /// </summary>
+        static void InsertAdress()
+        {
             codes.Clear();
             foreach (Token t in Token.List)
             {
@@ -106,20 +124,19 @@ namespace ZXASM
                 {
                     try
                     {
+                        if (!t.Label.Contains(".")) t.Label = t.ModuleString + "." + t.Label;
+                        //Здесь надо проверить есть ли точка, и если нет - подставить с названием текущего модуля
                         Label l = Label.List.Find(o => o.Name == t.Label);
                         if (l != null) t.SetAdress(l.Adress);
                         else throw new ArgumentException("Метка \"" + t.Label + "\" не найдена");
                     }
                     catch (Exception e)
                     {
-                        Error.List.Add(new Error("this", t.NumString, t.String, e.Message));
+                        Error.List.Add(new Error(t.ModuleString, t.NumString, t.String, e.Message));
                     }
                 }
                 foreach (byte b in t.Code) codes.Add(b);
             }
-            //Добавление внешних модулей
-            foreach (Module module in Module.List)
-                module.Include();
         }
     }
 }

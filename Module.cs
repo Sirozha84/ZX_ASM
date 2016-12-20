@@ -40,7 +40,7 @@ namespace ZXASM
         {
             if (included) return;
             included = true;
-            Compiler.Parsing(Text);
+            Compiler.Parsing(FileName, Text);
         }
     }
 }
