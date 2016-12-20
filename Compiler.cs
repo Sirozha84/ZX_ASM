@@ -22,7 +22,7 @@ namespace ZXASM
             Token.CurAdress = StartAdress;
             Label.List.Clear();
             Token.List.Clear();
-            Modules.List.Clear();
+            Module.List.Clear();
 
             Parsing(Text);
 #if DEBUG
@@ -118,7 +118,7 @@ namespace ZXASM
                 foreach (byte b in t.Code) codes.Add(b);
             }
             //Добавление внешних модулей
-            foreach (Modules module in Modules.List)
+            foreach (Module module in Module.List)
                 module.Include();
         }
     }

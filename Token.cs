@@ -61,7 +61,7 @@ namespace ZXASM
             if (Str[0] == "use")                                                                                //ORG
             {
                 ParamTest(Str, "USE", 2);
-                Modules.Add(Str[1]);
+                Module.Add(Str[1]);
                 return;
             }
             if (Str[0] == "ld")
