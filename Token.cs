@@ -294,6 +294,104 @@ namespace ZXASM
                 else return;
             }
             #endregion
+            #region ADD, INC, ADC
+            if (Str[0] == "add")
+            {
+                if (Str.Count() == 3)
+                {
+                    if (Str[1] == "a")
+                    {
+                        if (Str[2] == "a") { Code = new byte[] { 135 }; return; }                               //ADD A,A
+                        if (Str[2] == "h") { Code = new byte[] { 132 }; return; }                               //ADD A,H
+                        if (Str[2] == "l") { Code = new byte[] { 133 }; return; }                               //ADD A,L
+                        if (Str[2] == "b") { Code = new byte[] { 128 }; return; }                               //ADD A,B
+                        if (Str[2] == "c") { Code = new byte[] { 129 }; return; }                               //ADD A,C
+                        if (Str[2] == "d") { Code = new byte[] { 130 }; return; }                               //ADD A,D
+                        if (Str[2] == "e") { Code = new byte[] { 131 }; return; }                               //ADD A,E
+                        if (Str[2] == "(hl)") { Code = new byte[] { 134 }; return; }                            //ADD A,(HL)
+                        if (ReadIX(Str[2], out S)) { Code = new byte[] { 221, 134, (byte)S }; return; }         //ADD A,(IX+S)
+                        if (ReadIY(Str[2], out S)) { Code = new byte[] { 253, 134, (byte)S }; return; }         //ADD A,(IY+S)
+                        To = 1;
+                        if (ReadNum(Str[2], out NN)) { Code = new byte[] { 198, B1(NN) }; return; }             //ADD A,N
+                    }
+                    if (Str[1] == "hl")
+                    {
+                        if (Str[2] == "hl") { Code = new byte[] { 41 }; return; }                               //ADD HL,HL
+                        if (Str[2] == "bc") { Code = new byte[] { 9 }; return; }                                //ADD HL,BC
+                        if (Str[2] == "de") { Code = new byte[] { 25 }; return; }                               //ADD HL,DE
+                        if (Str[2] == "sp") { Code = new byte[] { 57 }; return; }                               //ADD HL,SP
+                    }
+                    if (Str[1] == "ix")
+                    {
+                        if (Str[2] == "ix") { Code = new byte[] { 221, 41 }; return; }                          //ADD IX,IX
+                        if (Str[2] == "bc") { Code = new byte[] { 221, 9 }; return; }                           //ADD IX,BC
+                        if (Str[2] == "de") { Code = new byte[] { 221, 25 }; return; }                          //ADD IX,DE
+                        if (Str[2] == "sp") { Code = new byte[] { 221, 57 }; return; }                          //ADD IX,SP
+                    }
+                    if (Str[1] == "iy")
+                    {
+                        if (Str[2] == "iy") { Code = new byte[] { 253, 41 }; return; }                          //ADD IY,IY
+                        if (Str[2] == "bc") { Code = new byte[] { 253, 9 }; return; }                           //ADD IY,BC
+                        if (Str[2] == "de") { Code = new byte[] { 253, 25 }; return; }                          //ADD IY,DE
+                        if (Str[2] == "sp") { Code = new byte[] { 253, 57 }; return; }                          //ADD IY,SP
+                    }
+                }
+            }
+            if (Str[0] == "inc")
+            {
+                if (Str.Count() == 2)
+                {
+                    if (Str[1] == "a") Code = new byte[] { 60 };                                                //INC A
+                    if (Str[1] == "h") Code = new byte[] { 36 };                                                //INC H
+                    if (Str[1] == "l") Code = new byte[] { 44 };                                                //INC L
+                    if (Str[1] == "b") Code = new byte[] { 4 };                                                 //INC B
+                    if (Str[1] == "c") Code = new byte[] { 12 };                                                //INC C
+                    if (Str[1] == "d") Code = new byte[] { 20 };                                                //INC D
+                    if (Str[1] == "e") Code = new byte[] { 28 };                                                //INC E
+                    if (Str[1] == "hl") Code = new byte[] { 35 };                                               //INC HL
+                    if (Str[1] == "bc") Code = new byte[] { 3 };                                                //INC BC
+                    if (Str[1] == "de") Code = new byte[] { 19 };                                               //INC DE
+                    if (Str[1] == "sp") Code = new byte[] { 51 };                                               //INC SP
+                    if (Str[1] == "ix") Code = new byte[] { 221, 35 };                                          //INC IX
+                    if (Str[1] == "iy") Code = new byte[] { 253, 35 };                                          //INC IY
+                    if (Str[1] == "(hl)") Code = new byte[] { 52 };                                             //INC (HL)
+
+                    if (ReadIX(Str[1], out S)) { Code = new byte[] { 221, 52, (byte)S }; return; }              //INC (IX+S)
+                    if (ReadIY(Str[1], out S)) { Code = new byte[] { 253, 52, (byte)S }; return; }              //INC (IY+S)
+                }
+            }
+            if (Str[0] == "adc")
+            {
+                if (Str.Count() == 3)
+                {
+                    if (Str[1] == "a")
+                    {
+                        if (Str[2] == "a") { Code = new byte[] { 143 }; return; }                               //ADC A,A
+                        if (Str[2] == "h") { Code = new byte[] { 140 }; return; }                               //ADC A,H
+                        if (Str[2] == "l") { Code = new byte[] { 141 }; return; }                               //ADC A,L
+                        if (Str[2] == "b") { Code = new byte[] { 136 }; return; }                               //ADC A,B
+                        if (Str[2] == "c") { Code = new byte[] { 137 }; return; }                               //ADC A,C
+                        if (Str[2] == "d") { Code = new byte[] { 138 }; return; }                               //ADC A,D
+                        if (Str[2] == "e") { Code = new byte[] { 139 }; return; }                               //ADC A,E
+                        if (Str[2] == "(hl)") { Code = new byte[] { 142 }; return; }                            //ADC A,(HL)
+                        if (ReadIX(Str[2], out S)) { Code = new byte[] { 221, 142, (byte)S }; return; }         //ADC A,(IX+S)
+                        if (ReadIY(Str[2], out S)) { Code = new byte[] { 253, 142, (byte)S }; return; }         //ADC A,(IY+S)
+                        To = 1;
+                        if (ReadNum(Str[2], out NN)) { Code = new byte[] { 206, B1(NN) }; return; }             //ADC A,N
+                    }
+                    if (Str[1] == "hl")
+                    {
+                        if (Str[2] == "hl") { Code = new byte[] { 237, 106 }; return; }                         //ADC HL,HL
+                        if (Str[2] == "bc") { Code = new byte[] { 237, 74 }; return; }                          //ADC HL,BC
+                        if (Str[2] == "de") { Code = new byte[] { 237, 90 }; return; }                          //ADC HL,DE
+                        if (Str[2] == "sp") { Code = new byte[] { 237, 122 }; return; }                         //ADC HL,SP
+                    }
+                }
+            }
+            #endregion
+            #region SUB, DEC
+            #endregion
+
             if (Str[0] == "exx")                                                                                
             {
                 Code = new byte[] { 217 }; return;                                                              //EXX
@@ -303,34 +401,12 @@ namespace ZXASM
                 if (Str[1] == "de" & Str[2] == "hl") { Code = new byte[] { 235 }; return; }                     //EX DE,HL
                 if (Str[1] == "af" & Str[2] == "af'") { Code = new byte[] { 8 }; return; }                      //EX AF,AF'
             }
-            if (Str[0] == "inc")
-            {
-                if (Str.Count() == 2)
-                {
-                    if (Str[1] == "b") Code = new byte[] { 4 };                                                 //INC B
-                    if (Str[1] == "hl") Code = new byte[] { 35 };                                               //INC HL
-                    if (Str[1] == "a") Code = new byte[] { 60 };                                                //INC A
-                }
-            }
             if (Str[0] == "dec")
             {
                 if (Str.Count() == 2)
                 {
                     if (Str[1] == "b") Code = new byte[] { 5 };                                                 //DEC B
                     if (Str[1] == "a") Code = new byte[] { 61 };                                                //DEC A
-                }
-            }
-            if (Str[0] == "add")
-            {
-                if (Str.Count() == 3)
-                {
-                    if (Str[1] == "a")
-                    {
-                        if (Str[2] == "b") Code = new byte[] { 128 };                                           //ADD A,B
-                        if (Str[2] == "c") Code = new byte[] { 129 };                                           //ADD A,C
-                        if (Str[2] == "a") Code = new byte[] { 135 };                                           //ADD A,A
-                        if (ReadNum(Str[2], out NN)) { Code = new byte[] { 198, B1(NN) }; };                    //ADD A,N
-                    }
                 }
             }
             if (Str[0] == "adc")
