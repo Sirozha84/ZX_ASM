@@ -454,7 +454,76 @@ namespace ZXASM
                 }
             }
             #endregion
-
+            #region CP, AND, OR, XOR
+            if (Str[0] == "cp")
+            {
+                if (Str.Count() == 2)
+                {
+                    if (Str[1] == "a") { Code = new byte[] { 191 }; return; }                                   //CP A
+                    if (Str[1] == "h") { Code = new byte[] { 188 }; return; }                                   //CP H
+                    if (Str[1] == "l") { Code = new byte[] { 189 }; return; }                                   //CP L
+                    if (Str[1] == "b") { Code = new byte[] { 184 }; return; }                                   //CP B
+                    if (Str[1] == "c") { Code = new byte[] { 185 }; return; }                                   //CP C
+                    if (Str[1] == "d") { Code = new byte[] { 186 }; return; }                                   //CP D
+                    if (Str[1] == "e") { Code = new byte[] { 187 }; return; }                                   //CP E
+                    if (Str[1] == "(hl)") { Code = new byte[] { 190 }; return; }                                //CP (HL)
+                    if (ReadIX(Str[1], out S)) { Code = new byte[] { 221, 190, (byte)S }; return; }             //CP (IX+S)
+                    if (ReadIY(Str[1], out S)) { Code = new byte[] { 253, 190, (byte)S }; return; }             //CP (IY+S)
+                    if (ReadNum(Str[1], out NN)) { Code = new byte[] { 254, B1(NN) }; return; }                 //CP A,N
+                }
+            }
+            if (Str[0] == "and")
+            {
+                if (Str.Count() == 2)
+                {
+                    if (Str[1] == "a") { Code = new byte[] { 167 }; return; }                                   //AND A
+                    if (Str[1] == "h") { Code = new byte[] { 164 }; return; }                                   //AND H
+                    if (Str[1] == "l") { Code = new byte[] { 165 }; return; }                                   //AND L
+                    if (Str[1] == "b") { Code = new byte[] { 160 }; return; }                                   //AND B
+                    if (Str[1] == "c") { Code = new byte[] { 161 }; return; }                                   //AND C
+                    if (Str[1] == "d") { Code = new byte[] { 162 }; return; }                                   //AND D
+                    if (Str[1] == "e") { Code = new byte[] { 163 }; return; }                                   //AND E
+                    if (Str[1] == "(hl)") { Code = new byte[] { 166 }; return; }                                //AND (HL)
+                    if (ReadIX(Str[1], out S)) { Code = new byte[] { 221, 166, (byte)S }; return; }             //AND (IX+S)
+                    if (ReadIY(Str[1], out S)) { Code = new byte[] { 253, 166, (byte)S }; return; }             //AND (IY+S)
+                    if (ReadNum(Str[1], out NN)) { Code = new byte[] { 230, B1(NN) }; return; }                 //AND A,N
+                }
+            }
+            if (Str[0] == "or")
+            {
+                if (Str.Count() == 2)
+                {
+                    if (Str[1] == "a") { Code = new byte[] { 183 }; return; }                                   //OR A
+                    if (Str[1] == "h") { Code = new byte[] { 180 }; return; }                                   //OR H
+                    if (Str[1] == "l") { Code = new byte[] { 181 }; return; }                                   //OR L
+                    if (Str[1] == "b") { Code = new byte[] { 176 }; return; }                                   //OR B
+                    if (Str[1] == "c") { Code = new byte[] { 177 }; return; }                                   //OR C
+                    if (Str[1] == "d") { Code = new byte[] { 178 }; return; }                                   //OR D
+                    if (Str[1] == "e") { Code = new byte[] { 179 }; return; }                                   //OR E
+                    if (Str[1] == "(hl)") { Code = new byte[] { 182 }; return; }                                //OR (HL)
+                    if (ReadIX(Str[1], out S)) { Code = new byte[] { 221, 182, (byte)S }; return; }             //OR (IX+S)
+                    if (ReadIY(Str[1], out S)) { Code = new byte[] { 253, 182, (byte)S }; return; }             //OR (IY+S)
+                    if (ReadNum(Str[1], out NN)) { Code = new byte[] { 246, B1(NN) }; return; }                 //OR A,N
+                }
+            }
+            if (Str[0] == "xor")
+            {
+                if (Str.Count() == 2)
+                {
+                    if (Str[1] == "a") { Code = new byte[] { 175 }; return; }                                   //XOR A
+                    if (Str[1] == "h") { Code = new byte[] { 172 }; return; }                                   //XOR H
+                    if (Str[1] == "l") { Code = new byte[] { 173 }; return; }                                   //XOR L
+                    if (Str[1] == "b") { Code = new byte[] { 168 }; return; }                                   //XOR B
+                    if (Str[1] == "c") { Code = new byte[] { 169 }; return; }                                   //XOR C
+                    if (Str[1] == "d") { Code = new byte[] { 170 }; return; }                                   //XOR D
+                    if (Str[1] == "e") { Code = new byte[] { 171 }; return; }                                   //XOR E
+                    if (Str[1] == "(hl)") { Code = new byte[] { 174 }; return; }                                //XOR (HL)
+                    if (ReadIX(Str[1], out S)) { Code = new byte[] { 221, 174, (byte)S }; return; }             //XOR (IX+S)
+                    if (ReadIY(Str[1], out S)) { Code = new byte[] { 253, 174, (byte)S }; return; }             //XOR (IY+S)
+                    if (ReadNum(Str[1], out NN)) { Code = new byte[] { 238, B1(NN) }; return; }                 //XOR A,N
+                }
+            }
+            #endregion
             if (Str[0] == "exx")                                                                                
             {
                 Code = new byte[] { 217 }; return;                                                              //EXX
@@ -463,60 +532,6 @@ namespace ZXASM
             {
                 if (Str[1] == "de" & Str[2] == "hl") { Code = new byte[] { 235 }; return; }                     //EX DE,HL
                 if (Str[1] == "af" & Str[2] == "af'") { Code = new byte[] { 8 }; return; }                      //EX AF,AF'
-            }
-            if (Str[0] == "dec")
-            {
-                if (Str.Count() == 2)
-                {
-                    if (Str[1] == "b") Code = new byte[] { 5 };                                                 //DEC B
-                    if (Str[1] == "a") Code = new byte[] { 61 };                                                //DEC A
-                }
-            }
-            if (Str[0] == "adc")
-            {
-                if (Str.Count() == 3)
-                {
-                    if (Str[1] == "a")
-                    {
-                        if (Str[2] == "b") Code = new byte[] { 136 };                                           //ADC A,B
-                        if (Str[2] == "c") Code = new byte[] { 137 };                                           //ADC A,C
-                        if (Str[2] == "a") Code = new byte[] { 143 };                                           //ADC A,A
-                        if (ReadNum(Str[2], out NN)) { Code = new byte[] { 198, B1(NN) }; };                    //ADC A,N
-                    }
-                }
-            }
-            if (Str[0] == "cp")
-            {
-                if (Str.Count() == 2)
-                {
-                    if (Str[1] == "c") Code = new byte[] { 185 };                                               //CP C
-                    if (ReadNum(Str[1], out NN)) { Code = new byte[] { 254, B1(NN) }; };                        //CP N
-                }
-            }
-            if (Str[0] == "and")
-            {
-                if (Str.Count() == 2)
-                {
-                    if (Str[1] == "c") Code = new byte[] { 161 };                                               //AND C
-                    if (ReadNum(Str[1], out NN)) { Code = new byte[] { 230, B1(NN) }; };                        //AND N
-                }
-            }
-            if (Str[0] == "or")
-            {
-                if (Str.Count() == 2)
-                {
-                    if (Str[1] == "c") Code = new byte[] { 177 };                                               //OR C
-                    if (ReadNum(Str[1], out NN)) { Code = new byte[] { 246, B1(NN) }; };                        //OR N
-                }
-            }
-            if (Str[0] == "xor")
-            {
-                if (Str.Count() == 2)
-                {
-                    if (Str[1] == "c") Code = new byte[] { 169 };                                               //XOR C
-                    if (Str[1] == "a") Code = new byte[] { 175 };                                               //XOR C
-                    if (ReadNum(Str[1], out NN)) { Code = new byte[] { 238, B1(NN) }; };                        //XOR N
-                }
             }
             if (Str[0] == "jp")
             {
