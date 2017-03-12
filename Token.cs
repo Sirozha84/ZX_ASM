@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ZXASM
 {
@@ -524,7 +522,66 @@ namespace ZXASM
                 }
             }
             #endregion
-            if (Str[0] == "exx")                                                                                
+            #region JP, JR
+            if (Str[0] == "jp")
+            {
+                if (Str.Count() == 2)
+                {
+                    if (Str[1] == "(hl)") { Code = new byte[] { 233 }; return; }                                //JP (HL)
+                    if (Str[1] == "(ix)") { Code = new byte[] { 221, 233 }; return; }                           //JP (IX)
+                    if (Str[1] == "(iy)") { Code = new byte[] { 253, 233 }; return; }                           //JP (IY)
+                    To = 1;
+                    if (ReadNum(Str[1], out NN)) { Code = new byte[] { 195, B1(NN), B2(NN) }; return; }         //JP NN
+                }
+                if (Str.Count() == 3)
+                {
+                    if (Str[1] == "c")
+                        if (ReadNum(Str[2], out NN)) { Code = new byte[] { 218, B1(NN), B2(NN) }; return; }     //JP С,NN
+                    if (Str[1] == "nc")
+                        if (ReadNum(Str[2], out NN)) { Code = new byte[] { 210, B1(NN), B2(NN) }; return; }     //JP NС,NN
+                    if (Str[1] == "z")
+                        if (ReadNum(Str[2], out NN)) { Code = new byte[] { 202, B1(NN), B2(NN) }; return; }     //JP Z,NN
+                    if (Str[1] == "nz")
+                        if (ReadNum(Str[2], out NN)) { Code = new byte[] { 194, B1(NN), B2(NN) }; return; }     //JP NZ,NN
+                    if (Str[1] == "p")
+                        if (ReadNum(Str[2], out NN)) { Code = new byte[] { 242, B1(NN), B2(NN) }; return; }     //JP P,NN
+                    if (Str[1] == "m")
+                        if (ReadNum(Str[2], out NN)) { Code = new byte[] { 250, B1(NN), B2(NN) }; return; }     //JP M,NN
+                    if (Str[1] == "pe")
+                        if (ReadNum(Str[2], out NN)) { Code = new byte[] { 234, B1(NN), B2(NN) }; return; }     //JP PE,NN
+                    if (Str[1] == "po")
+                        if (ReadNum(Str[2], out NN)) { Code = new byte[] { 226, B1(NN), B2(NN) }; return; }     //JP PO,NN
+                }
+            }
+            if (Str[0] == "jr")
+            {
+                To = 1;
+                Rel = true;
+                if (Str.Count() == 2)
+                {
+                    if (ReadNum(Str[1], out NN)) { Code = new byte[] { 24, B1(NN) }; return; }                  //JR S
+                }
+                if (Str.Count() == 3)
+                {
+                    if (Str[1] == "c")
+                        if (ReadNum(Str[2], out NN)) { Code = new byte[] { 56, B1(NN) }; return; }              //JR C,S
+                    if (Str[1] == "z")
+                        if (ReadNum(Str[2], out NN)) { Code = new byte[] { 40, B1(NN) }; return; }              //JR Z,S
+                    if (Str[1] == "nz")
+                        if (ReadNum(Str[2], out NN)) { Code = new byte[] { 32, B1(NN) }; return; }              //JR NZ,S
+                }
+            }
+            if (Str[0] == "djnz")
+            {
+                To = 1;
+                Rel = true;
+                if (Str.Count() == 2)
+                {
+                    if (ReadNum(Str[1], out NN)) { Code = new byte[] { 16, B1(NN) }; return; }                    //DJNZ S
+                }
+            }
+            #endregion
+            if (Str[0] == "exx")
             {
                 Code = new byte[] { 217 }; return;                                                              //EXX
             }
@@ -532,37 +589,6 @@ namespace ZXASM
             {
                 if (Str[1] == "de" & Str[2] == "hl") { Code = new byte[] { 235 }; return; }                     //EX DE,HL
                 if (Str[1] == "af" & Str[2] == "af'") { Code = new byte[] { 8 }; return; }                      //EX AF,AF'
-            }
-            if (Str[0] == "jp")
-            {
-                if (Str.Count() == 2)
-                {
-                    switch (Str[1])
-                    {
-                        case "(hl)": Code = new byte[] { 233 }; break;                                          //JP (HL)
-                        case "(ix)": Code = new byte[] { 221, 233 }; break;                                     //JP (IX)
-                        case "(iy)": Code = new byte[] { 253, 233 }; break;                                     //JP (IY)
-                        default: Code = new byte[] { 195, 0, 0 }; GetLabel(1, Str[1]); break;                   //JP NN
-                    }
-                }
-                if (Str.Count() == 3)
-                {
-
-                }
-            }
-            if (Str[0] == "jr")
-            {
-                if (Str.Count() == 2)
-                {
-                    Code = new byte[] { 24, 0 }; GetLabel(1, Str[1]); Rel = true;                               //JR S
-                }
-            }
-            if (Str[0] == "djnz")
-            {
-                if (Str.Count() == 2)
-                {
-                    Code = new byte[] { 16, 0 }; GetLabel(1, Str[1]); Rel = true;                               //DJNZ S
-                }
             }
             if (Str[0] == "call")
             {
@@ -573,7 +599,7 @@ namespace ZXASM
                         //case "(hl)": Code = new byte[] { 233 }; break;
                         //case "(ix)": Code = new byte[] { 221, 233 }; break;
                         //case "(iy)": Code = new byte[] { 253, 233 }; break;
-                        default: Code = new byte[] { 205, 0, 0 }; GetLabel(1, Str[1]); break;                   //CALL NN
+                        //default: Code = new byte[] { 205, 0, 0 }; GetLabel(1, Str[1]); break;                   //CALL NN
                     }
                 }
                 if (Str.Count() == 3)
@@ -601,29 +627,25 @@ namespace ZXASM
         }
 
         /// <summary>
-        /// Изъятие адреса (лейбл или прямой адрес)
-        /// </summary>
-        /// <param name="str"></param>
-        void GetLabel(int to, string str)
-        {
-            To = to;
-            Label = str;
-        }
-
-        /// <summary>
         /// Подсановка реального адреса вместо лейбла
         /// </summary>
         /// <param name="adr"></param>
         public void SetAdress(int adr)
         {
-            if (To + 2 > Code.Count()) throw new ArgumentException("Команда не поддерживает 16-и битную адрессацию");
+            //if (To + 2 > Code.Count()) throw new ArgumentException("Команда не поддерживает 16-и битную адрессацию");
             if (Rel)
             {
                 int jr = adr - Adress - 2;
                 if (jr >= 0)
+                {
+                    if (jr > 127) throw new AccessViolationException("Относительный переход не не может быть таким большим");
                     Code[To] = (byte)jr;
+                }
                 else
+                {
+                    if (jr < -128) throw new AccessViolationException("Относительный переход не не может быть таким большим");
                     Code[To] = (byte)(256 + jr);
+                }
             }
             else
             {
