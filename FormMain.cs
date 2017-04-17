@@ -99,7 +99,7 @@ namespace ZXASM
 
         private void собратьСнимокToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Compiler.Compile(textBox1.Text, @"c:\Users\sg\Desktop\test", 1);
+            Compiler.Compile(textBox1.Text, @"c:\Users\sg\YandexDisk\Проекты\test", 1);
         }
 
         private void сайтРазработчикаToolStripMenuItem_Click(object sender, EventArgs e)

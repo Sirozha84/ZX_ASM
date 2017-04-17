@@ -577,30 +577,63 @@ namespace ZXASM
                 Rel = true;
                 if (Str.Count() == 2)
                 {
-                    if (ReadNum(Str[1], out NN)) { Code = new byte[] { 16, B1(NN) }; return; }                    //DJNZ S
+                    if (ReadNum(Str[1], out NN)) { Code = new byte[] { 16, B1(NN) }; return; }                  //DJNZ S
                 }
             }
             #endregion
+            #region PUSH, POP
+            if (Str[0] == "push")
+            {
+                if (Str.Count() == 2)
+                {
+                    if (Str[1] == "af") { Code = new byte[] { 245 }; return; }                                  //PUSH AF
+                    if (Str[1] == "bc") { Code = new byte[] { 197 }; return; }                                  //PUSH BC
+                    if (Str[1] == "de") { Code = new byte[] { 213 }; return; }                                  //PUSH DE
+                    if (Str[1] == "hl") { Code = new byte[] { 229 }; return; }                                  //PUSH HL
+                    if (Str[1] == "ix") { Code = new byte[] { 221, 229 }; return; }                             //PUSH IX
+                    if (Str[1] == "iy") { Code = new byte[] { 253, 229 }; return; }                             //PUSH IY
+                }
+            }
+            if (Str[0] == "pop")
+            {
+                if (Str.Count() == 2)
+                {
+                    if (Str[1] == "af") { Code = new byte[] { 241 }; return; }                                  //POP AF
+                    if (Str[1] == "bc") { Code = new byte[] { 193 }; return; }                                  //POP BC
+                    if (Str[1] == "de") { Code = new byte[] { 209 }; return; }                                  //POP DE
+                    if (Str[1] == "hl") { Code = new byte[] { 225 }; return; }                                  //POP HL
+                    if (Str[1] == "ix") { Code = new byte[] { 221, 225 }; return; }                             //POP IX
+                    if (Str[1] == "iy") { Code = new byte[] { 253, 225 }; return; }                             //POP IY
+                }
+            }
+            #endregion
+
             if (Str[0] == "exx")
             {
                 Code = new byte[] { 217 }; return;                                                              //EXX
             }
             if (Str[0] == "ex")
             {
-                if (Str[1] == "de" & Str[2] == "hl") { Code = new byte[] { 235 }; return; }                     //EX DE,HL
-                if (Str[1] == "af" & Str[2] == "af'") { Code = new byte[] { 8 }; return; }                      //EX AF,AF'
+                if (Str.Count() == 3)
+                {
+                    if (Str[1] == "de" & Str[2] == "hl") { Code = new byte[] { 235 }; return; }                 //EX DE,HL
+                    if (Str[1] == "af" & Str[2] == "af'") { Code = new byte[] { 8 }; return; }                  //EX AF,AF'
+                    if (Str[1] == "(sp)" & Str[2] == "hl") { Code = new byte[] { 227 }; return; }               //EX (SP),HL
+                    if (Str[1] == "(sp)" & Str[2] == "ix") { Code = new byte[] { 221, 227 }; return; }          //EX (SP),IX
+                    if (Str[1] == "(sp)" & Str[2] == "iy") { Code = new byte[] { 253, 227 }; return; }          //EX (SP),IY
+                }
             }
             if (Str[0] == "call")
             {
                 if (Str.Count() == 2)
                 {
-                    switch (Str[1])
-                    {
+                    //switch (Str[1])
+                    //{
                         //case "(hl)": Code = new byte[] { 233 }; break;
                         //case "(ix)": Code = new byte[] { 221, 233 }; break;
                         //case "(iy)": Code = new byte[] { 253, 233 }; break;
                         //default: Code = new byte[] { 205, 0, 0 }; GetLabel(1, Str[1]); break;                   //CALL NN
-                    }
+                    //}
                 }
                 if (Str.Count() == 3)
                 {
