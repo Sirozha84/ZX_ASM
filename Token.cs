@@ -584,7 +584,7 @@ namespace ZXASM
             #region PUSH, POP
             if (Str[0] == "push")
             {
-                if (Str.Count() == 2)
+                if (Str.Length == 2)
                 {
                     if (Str[1] == "af") { Code = new byte[] { 245 }; return; }                                  //PUSH AF
                     if (Str[1] == "bc") { Code = new byte[] { 197 }; return; }                                  //PUSH BC
@@ -596,7 +596,7 @@ namespace ZXASM
             }
             if (Str[0] == "pop")
             {
-                if (Str.Count() == 2)
+                if (Str.Length == 2)
                 {
                     if (Str[1] == "af") { Code = new byte[] { 241 }; return; }                                  //POP AF
                     if (Str[1] == "bc") { Code = new byte[] { 193 }; return; }                                  //POP BC
@@ -607,7 +607,65 @@ namespace ZXASM
                 }
             }
             #endregion
+            #region RST, CALL, RET
+            if (Str[0] == "rst")
+            {
+                if (Str.Length == 2)
+                {
+                    if (Str[1] == "0") { Code = new byte[] { 199 }; return; }                                   //RST 0
+                    if (Str[1] == "8") { Code = new byte[] { 207 }; return; }                                   //RST 8
+                    if (Str[1] == "10") { Code = new byte[] { 215 }; return; }                                  //RST 10
+                    if (Str[1] == "18") { Code = new byte[] { 223 }; return; }                                  //RST 18
+                    if (Str[1] == "20") { Code = new byte[] { 231 }; return; }                                  //RST 20
+                    if (Str[1] == "28") { Code = new byte[] { 239 }; return; }                                  //RST 28
+                    if (Str[1] == "30") { Code = new byte[] { 247 }; return; }                                  //RST 30
+                    if (Str[1] == "38") { Code = new byte[] { 255 }; return; }                                  //RST 38
+                }
+            }
+            if (Str[0] == "call")
+            {
+                if (Str.Length == 2)
+                {
+                    if (ReadNum(Str[1], out NN)) { Code = new byte[] { 205, B1(NN), B2(NN) }; return; }         //CALL NN
+                }
+                else if (Str.Length == 3)
+                {
+                    if (Str[1] == "c" && ReadNum(Str[2], out NN))
+                        { Code = new byte[] { 220, B1(NN), B2(NN) }; return; }                                  //CALL C,NN
+                    if (Str[1] == "nc" && ReadNum(Str[2], out NN))
+                        { Code = new byte[] { 212, B1(NN), B2(NN) }; return; }                                  //CALL NC,NN
+                    if (Str[1] == "z" && ReadNum(Str[2], out NN))
+                        { Code = new byte[] { 204, B1(NN), B2(NN) }; return; }                                  //CALL Z,NN
+                    if (Str[1] == "nz" && ReadNum(Str[2], out NN))
+                        { Code = new byte[] { 196, B1(NN), B2(NN) }; return; }                                  //CALL NZ,NN
+                    if (Str[1] == "m" && ReadNum(Str[2], out NN))
+                        { Code = new byte[] { 252, B1(NN), B2(NN) }; return; }                                  //CALL M,NN
+                    if (Str[1] == "p" && ReadNum(Str[2], out NN))
+                        { Code = new byte[] { 244, B1(NN), B2(NN) }; return; }                                  //CALL P,NN
+                    if (Str[1] == "pe" && ReadNum(Str[2], out NN))
+                        { Code = new byte[] { 236, B1(NN), B2(NN) }; return; }                                  //CALL PE,NN
+                    if (Str[1] == "po" && ReadNum(Str[2], out NN))
+                        { Code = new byte[] { 228, B1(NN), B2(NN) }; return; }                                  //CALL PO,NN
+                }
+            }
+            if (Str[0] == "ret")
+            {
+                if (Str.Length == 1) { Code = new byte[] { 201 }; return; }                                     //RET
+                else if (Str.Length == 2)
+                {
+                    if (Str[1] == "c" ) { Code = new byte[] { 216 }; return; }                                  //RET C
+                    if (Str[1] == "nc" ) { Code = new byte[] { 208 }; return; }                                 //RET NC
+                    if (Str[1] == "z" ) { Code = new byte[] { 200 }; return; }                                  //RET Z
+                    if (Str[1] == "nz" ) { Code = new byte[] { 192 }; return; }                                 //RET NZ
+                    if (Str[1] == "m" ) { Code = new byte[] { 248 }; return; }                                  //RET M
+                    if (Str[1] == "p" ) { Code = new byte[] { 240 }; return; }                                  //RET P
+                    if (Str[1] == "pe" ) { Code = new byte[] { 232 }; return; }                                 //RET PE
+                    if (Str[1] == "po" ) { Code = new byte[] { 224 }; return; }                                 //RET PO
+                }
+            }
 
+
+            #endregion
             if (Str[0] == "exx")
             {
                 Code = new byte[] { 217 }; return;                                                              //EXX
@@ -621,23 +679,6 @@ namespace ZXASM
                     if (Str[1] == "(sp)" & Str[2] == "hl") { Code = new byte[] { 227 }; return; }               //EX (SP),HL
                     if (Str[1] == "(sp)" & Str[2] == "ix") { Code = new byte[] { 221, 227 }; return; }          //EX (SP),IX
                     if (Str[1] == "(sp)" & Str[2] == "iy") { Code = new byte[] { 253, 227 }; return; }          //EX (SP),IY
-                }
-            }
-            if (Str[0] == "call")
-            {
-                if (Str.Count() == 2)
-                {
-                    //switch (Str[1])
-                    //{
-                        //case "(hl)": Code = new byte[] { 233 }; break;
-                        //case "(ix)": Code = new byte[] { 221, 233 }; break;
-                        //case "(iy)": Code = new byte[] { 253, 233 }; break;
-                        //default: Code = new byte[] { 205, 0, 0 }; GetLabel(1, Str[1]); break;                   //CALL NN
-                    //}
-                }
-                if (Str.Count() == 3)
-                {
-                    //по условиям
                 }
             }
 
