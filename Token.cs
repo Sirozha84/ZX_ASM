@@ -59,6 +59,8 @@ namespace ZXASM
             IsComand = true;
             ushort NN;
             ushort S;
+            
+            #region Директивы компилятора
             if (Str[0] == "org")                                                                                //ORG
             {
                 if (List.Count > 0) throw new ArgumentException("Директива ORG может использоваться только в начале программы");
@@ -73,6 +75,17 @@ namespace ZXASM
                 Module.Add(Str[1]);
                 return;
             }
+            if (Str[0] == "defb")
+            {
+                Code = new byte[Str.Length - 1];
+                for (int i = 0; i < Str.Length - 1; i++)
+                {
+                    ReadNum(Str[i + 1], out NN);
+                    Code[i] = B1(NN);
+                }
+            }
+            #endregion
+
             #region LD
             if (Str[0] == "ld")
             {
@@ -292,6 +305,7 @@ namespace ZXASM
                 else return;
             }
             #endregion
+            
             #region ADD, ADC, INC
             if (Str[0] == "add")
             {
@@ -384,6 +398,7 @@ namespace ZXASM
                 }
             }
             #endregion
+
             #region SUB, SBC, DEC
             if (Str[0] == "sub")
             {
@@ -452,6 +467,7 @@ namespace ZXASM
                 }
             }
             #endregion
+
             #region CP, AND, OR, XOR
             if (Str[0] == "cp")
             {
@@ -522,6 +538,7 @@ namespace ZXASM
                 }
             }
             #endregion
+
             #region JP, JR
             if (Str[0] == "jp")
             {
@@ -581,6 +598,7 @@ namespace ZXASM
                 }
             }
             #endregion
+
             #region PUSH, POP
             if (Str[0] == "push")
             {
@@ -607,6 +625,7 @@ namespace ZXASM
                 }
             }
             #endregion
+
             #region RST, CALL, RET
             if (Str[0] == "rst")
             {
@@ -663,9 +682,8 @@ namespace ZXASM
                     if (Str[1] == "po" ) { Code = new byte[] { 224 }; return; }                                 //RET PO
                 }
             }
-
-
             #endregion
+
             #region SRL, SRA, SLA
             if (Str[0] == "srl")
             {
@@ -716,6 +734,7 @@ namespace ZXASM
                 }
             }
             #endregion
+
             #region RL, RR, RLC, RRC, RLA, RRA, RLCA, RRCA, RLD, RRD
             if (Str[0] == "rl")
             {
@@ -788,6 +807,7 @@ namespace ZXASM
             if (Str[0] == "rld") { Code = new byte[] { 237, 111 }; return; }                                    //RLD
             if (Str[0] == "rrd") { Code = new byte[] { 237, 103 }; return; }                                    //RRD
             #endregion
+
             #region SET, RES, BIT, LDIR, LDDR, LDI, LDD, CPIR, CPDR, CPI, CPD
             if (Str[0] == "set" | Str[0] == "res" | Str[0] == "bit")
             {
@@ -822,7 +842,8 @@ namespace ZXASM
             if (Str[0] == "cpi") { Code = new byte[] { 237, 161 }; return; }                                    //CPI
             if (Str[0] == "cpd") { Code = new byte[] { 237, 169 }; return; }                                    //CPD
             #endregion
-            #region IN, OUT
+
+            #region IN, INIR, INDR, INI, IND, OUT, OTIR, ITDR, OUTI, OUTD
             if (Str[0] == "in")
             {
                 if (Str.Length == 3)
@@ -877,7 +898,30 @@ namespace ZXASM
 
             #endregion
 
-            if (Str[0] == "exx") { Code = new byte[] { 217 }; return; }                                         //EXX
+            #region EI, DI, IM, MOP, CLP, NEG, SCF, CCF, HALT, DAA
+            if (Str[0] == "ei") { Code = new byte[] { 251 }; return; }                                          //EI
+            if (Str[0] == "di") { Code = new byte[] { 243 }; return; }                                          //DI
+            if (Str[0] == "im")
+            {
+                if (Str.Length == 2)
+                {
+                    if (Str[1] == "0") { Code = new byte[] { 237, 70 }; return; }                               //IM 0
+                    if (Str[1] == "1") { Code = new byte[] { 237, 86 }; return; }                               //IM 1
+                    if (Str[1] == "2") { Code = new byte[] { 237, 94 }; return; }                               //IM 2
+                }
+            }
+            if (Str[0] == "reti") { Code = new byte[] { 237, 77 }; return; }                                    //RETI
+            if (Str[0] == "retn") { Code = new byte[] { 237, 69 }; return; }                                    //RETN
+            if (Str[0] == "nop") { Code = new byte[] { 0 }; return; }                                           //NOP
+            if (Str[0] == "cpl") { Code = new byte[] { 47 }; return; }                                          //CPL
+            if (Str[0] == "neg") { Code = new byte[] { 237, 68 }; return; }                                     //NEG
+            if (Str[0] == "scf") { Code = new byte[] { 55 }; return; }                                          //SCF
+            if (Str[0] == "ccf") { Code = new byte[] { 63 }; return; }                                          //CCF
+            if (Str[0] == "halt") { Code = new byte[] { 118 }; return; }                                        //HALT
+            if (Str[0] == "daa") { Code = new byte[] { 39 }; return; }                                          //DAA
+            #endregion
+
+            /*if (Str[0] == "exx") { Code = new byte[] { 217 }; return; }                                         //EXX
             if (Str[0] == "ex")
             {
                 if (Str.Count() == 3)
@@ -890,19 +934,7 @@ namespace ZXASM
                 }
             }
 
-            if (Str[0] == "nop") { Code = new byte[] { 0 }; return; }                                           //NOP
-            if (Str[0] == "reti") { Code = new byte[] { 239, 77 }; }                                            //RETI
-            if (Str[0] == "di") { Code = new byte[] { 243 }; return; }                                          //DI
-            if (Str[0] == "ei") { Code = new byte[] { 251 }; return; }                                          //EI
-            if (Str[0] == "defb")
-            {
-                Code = new byte[Str.Length - 1];
-                for (int i = 0; i < Str.Length - 1; i++)
-                {
-                    ReadNum(Str[i + 1], out NN);
-                    Code[i] = B1(NN);
-                }
-            }
+            //if (Str[0] == "reti") { Code = new byte[] { 239, 77 }; }                                            //RETI*/
             if (Code == null)
                 throw new ArgumentException("Не известная команда \"" + Str[0] + "\"");
         }
