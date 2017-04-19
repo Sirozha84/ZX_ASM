@@ -788,6 +788,40 @@ namespace ZXASM
             if (Str[0] == "rld") { Code = new byte[] { 237, 111 }; return; }                                    //RLD
             if (Str[0] == "rrd") { Code = new byte[] { 237, 103 }; return; }                                    //RRD
             #endregion
+            #region SET, RES, BIT, LDIR, LDDR, LDI, LDD
+            if (Str[0] == "set" | Str[0] == "res" | Str[0] == "bit")
+            {
+                if (Str.Length == 3)
+                {
+                    byte first = 0;
+                    try { first = Convert.ToByte(Str[1]); } catch { }
+                    if (first >= 0 & first <= 7)
+                    {
+                        if (Str[0] == "set") first = (byte)(192 + first * 8);
+                        if (Str[0] == "res") first = (byte)(128 + first * 8);
+                        if (Str[0] == "bit") first = (byte)(64 + first * 8);
+                        if (Str[2] == "a") { Code = new byte[] { 203, (byte)(first + 7) }; return; }
+                        if (Str[2] == "h") { Code = new byte[] { 203, (byte)(first + 4) }; return; }
+                        if (Str[2] == "l") { Code = new byte[] { 203, (byte)(first + 5) }; return; }
+                        if (Str[2] == "b") { Code = new byte[] { 203, first }; return; }
+                        if (Str[2] == "c") { Code = new byte[] { 203, (byte)(first + 1) }; return; }
+                        if (Str[2] == "d") { Code = new byte[] { 203, (byte)(first + 2) }; return; }
+                        if (Str[2] == "e") { Code = new byte[] { 203, (byte)(first + 3) }; return; }
+                        if (Str[2] == "(hl)") { Code = new byte[] { 203, (byte)(first + 6) }; return; }
+                        if (ReadIX(Str[2], out S)) { Code = new byte[] { 221, 203, (byte)S, (byte)(first + 6) }; return; }
+                        if (ReadIY(Str[2], out S)) { Code = new byte[] { 253, 203, (byte)S, (byte)(first + 6) }; return; }
+                    }
+                }
+            }
+            if (Str[0] == "ldir") { Code = new byte[] { 237, 176 }; return; }                                   //LDIR
+            if (Str[0] == "lddr") { Code = new byte[] { 237, 184 }; return; }                                   //LDDR
+            if (Str[0] == "ldi") { Code = new byte[] { 237, 160 }; return; }                                    //LDI
+            if (Str[0] == "ldd") { Code = new byte[] { 237, 168 }; return; }                                    //LDD
+            if (Str[0] == "cpir") { Code = new byte[] { 237, 177 }; return; }                                   //CPIR
+            if (Str[0] == "cpdr") { Code = new byte[] { 237, 185 }; return; }                                   //CPDR
+            if (Str[0] == "cpi") { Code = new byte[] { 237, 161 }; return; }                                    //CPI
+            if (Str[0] == "cpd") { Code = new byte[] { 237, 169 }; return; }                                    //CPD
+            #endregion
             if (Str[0] == "exx") { Code = new byte[] { 217 }; return; }                                         //EXX
             if (Str[0] == "ex")
             {
