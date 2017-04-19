@@ -788,7 +788,7 @@ namespace ZXASM
             if (Str[0] == "rld") { Code = new byte[] { 237, 111 }; return; }                                    //RLD
             if (Str[0] == "rrd") { Code = new byte[] { 237, 103 }; return; }                                    //RRD
             #endregion
-            #region SET, RES, BIT, LDIR, LDDR, LDI, LDD
+            #region SET, RES, BIT, LDIR, LDDR, LDI, LDD, CPIR, CPDR, CPI, CPD
             if (Str[0] == "set" | Str[0] == "res" | Str[0] == "bit")
             {
                 if (Str.Length == 3)
@@ -822,6 +822,61 @@ namespace ZXASM
             if (Str[0] == "cpi") { Code = new byte[] { 237, 161 }; return; }                                    //CPI
             if (Str[0] == "cpd") { Code = new byte[] { 237, 169 }; return; }                                    //CPD
             #endregion
+            #region IN, OUT
+            if (Str[0] == "in")
+            {
+                if (Str.Length == 3)
+                {
+                    if (Str[2] == "(c)")
+                    {
+                        if (Str[1] == "a") { Code = new byte[] { 237, 120 }; return; }                          //IN A,(C)
+                        if (Str[1] == "h") { Code = new byte[] { 237, 96 }; return; }                           //IN H,(C)
+                        if (Str[1] == "l") { Code = new byte[] { 237, 104 }; return; }                          //IN L,(C)
+                        if (Str[1] == "b") { Code = new byte[] { 237, 64 }; return; }                           //IN B,(C)
+                        if (Str[1] == "c") { Code = new byte[] { 237, 72 }; return; }                           //IN C,(C)
+                        if (Str[1] == "d") { Code = new byte[] { 237, 80 }; return; }                           //IN D,(C)
+                        if (Str[1] == "e") { Code = new byte[] { 237, 88 }; return; }                           //IN E,(C)
+                        if (Str[1] == "f") { Code = new byte[] { 237, 112 }; return; }                          //IN F,(C)
+                    }
+                    if (Str[1] == "a" && Str[2][0] == '(' & Str[2][Str[2].Length - 1] == ')')
+                    {
+                        Str[2] = Str[2].Trim('(', ')');
+                        if (ReadNum(Str[2], out NN)) { Code = new byte[] { 219, B1(NN) }; return; }             //IN A,(N)
+                    }
+                }
+            }
+            if (Str[0] == "inir") { Code = new byte[] { 237, 178 }; return; }                                   //INIR
+            if (Str[0] == "indr") { Code = new byte[] { 237, 186 }; return; }                                   //INDR
+            if (Str[0] == "ini") { Code = new byte[] { 237, 162 }; return; }                                    //INI
+            if (Str[0] == "ind") { Code = new byte[] { 237, 170 }; return; }                                    //IND
+            if (Str[0] == "out")
+            {
+                if (Str.Length == 3)
+                {
+                    if (Str[1] == "(c)")
+                    {
+                        if (Str[2] == "a") { Code = new byte[] { 237, 121 }; return; }                          //OUT (C),A
+                        if (Str[2] == "h") { Code = new byte[] { 237, 97 }; return; }                           //OUT (C),H
+                        if (Str[2] == "l") { Code = new byte[] { 237, 105 }; return; }                          //OUT (C),L
+                        if (Str[2] == "b") { Code = new byte[] { 237, 65 }; return; }                           //OUT (C),B
+                        if (Str[2] == "c") { Code = new byte[] { 237, 73 }; return; }                           //OUT (C),C
+                        if (Str[2] == "d") { Code = new byte[] { 237, 81 }; return; }                           //OUT (C),D
+                        if (Str[2] == "e") { Code = new byte[] { 237, 89 }; return; }                           //OUT (C),E
+                    }
+                    if (Str[2] == "a" && Str[1][0] == '(' & Str[1][Str[1].Length - 1] == ')')
+                    {
+                        Str[1] = Str[1].Trim('(', ')');
+                        if (ReadNum(Str[1], out NN)) { Code = new byte[] { 211, B1(NN) }; return; }             //OUT (N),A
+                    }
+                }
+            }
+            if (Str[0] == "otir") { Code = new byte[] { 237, 179 }; return; }                                   //OTIR
+            if (Str[0] == "otdr") { Code = new byte[] { 237, 187 }; return; }                                   //OTDR
+            if (Str[0] == "outi") { Code = new byte[] { 237, 163 }; return; }                                   //OUTI
+            if (Str[0] == "outd") { Code = new byte[] { 237, 171 }; return; }                                   //OUTD
+
+            #endregion
+
             if (Str[0] == "exx") { Code = new byte[] { 217 }; return; }                                         //EXX
             if (Str[0] == "ex")
             {
