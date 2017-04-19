@@ -716,10 +716,79 @@ namespace ZXASM
                 }
             }
             #endregion
-            if (Str[0] == "exx")
+            #region RL, RR, RLC, RRC, RLA, RRA, RLCA, RRCA, RLD, RRD
+            if (Str[0] == "rl")
             {
-                Code = new byte[] { 217 }; return;                                                              //EXX
+                if (Str.Length == 2)
+                {
+                    if (Str[1] == "a") { Code = new byte[] { 203, 23 }; return; }                               //RL A
+                    if (Str[1] == "h") { Code = new byte[] { 203, 20 }; return; }                               //RL H
+                    if (Str[1] == "l") { Code = new byte[] { 203, 21 }; return; }                               //RL L
+                    if (Str[1] == "b") { Code = new byte[] { 203, 16 }; return; }                               //RL B
+                    if (Str[1] == "c") { Code = new byte[] { 203, 17 }; return; }                               //RL C
+                    if (Str[1] == "d") { Code = new byte[] { 203, 18 }; return; }                               //RL D
+                    if (Str[1] == "e") { Code = new byte[] { 203, 19 }; return; }                               //RL E
+                    if (Str[1] == "(hl)") { Code = new byte[] { 203, 22 }; return; }                            //RL (HL)
+                    if (ReadIX(Str[1], out S)) { Code = new byte[] { 221, 203, (byte)S, 22 }; return; }         //RL (IX+S)
+                    if (ReadIY(Str[1], out S)) { Code = new byte[] { 253, 203, (byte)S, 22 }; return; }         //RL (IY+S)
+                }
             }
+            if (Str[0] == "rr")
+            {
+                if (Str.Length == 2)
+                {
+                    if (Str[1] == "a") { Code = new byte[] { 203, 31 }; return; }                               //RR A
+                    if (Str[1] == "h") { Code = new byte[] { 203, 28 }; return; }                               //RR H
+                    if (Str[1] == "l") { Code = new byte[] { 203, 29 }; return; }                               //RR L
+                    if (Str[1] == "b") { Code = new byte[] { 203, 24 }; return; }                               //RR B
+                    if (Str[1] == "c") { Code = new byte[] { 203, 25 }; return; }                               //RR C
+                    if (Str[1] == "d") { Code = new byte[] { 203, 26 }; return; }                               //RR D
+                    if (Str[1] == "e") { Code = new byte[] { 203, 27 }; return; }                               //RR E
+                    if (Str[1] == "(hl)") { Code = new byte[] { 203, 30 }; return; }                            //RR (HL)
+                    if (ReadIX(Str[1], out S)) { Code = new byte[] { 221, 203, (byte)S, 30 }; return; }         //RR (IX+S)
+                    if (ReadIY(Str[1], out S)) { Code = new byte[] { 253, 203, (byte)S, 30 }; return; }         //RR (IY+S)
+                }
+            }
+            if (Str[0] == "rlc")
+            {
+                if (Str.Length == 2)
+                {
+                    if (Str[1] == "a") { Code = new byte[] { 203, 7 }; return; }                                //RLC A
+                    if (Str[1] == "h") { Code = new byte[] { 203, 4 }; return; }                                //RLC H
+                    if (Str[1] == "l") { Code = new byte[] { 203, 5 }; return; }                                //RLC L
+                    if (Str[1] == "b") { Code = new byte[] { 203, 0 }; return; }                                //RLC B
+                    if (Str[1] == "c") { Code = new byte[] { 203, 1 }; return; }                                //RLC C
+                    if (Str[1] == "d") { Code = new byte[] { 203, 2 }; return; }                                //RLC D
+                    if (Str[1] == "e") { Code = new byte[] { 203, 3 }; return; }                                //RLC E
+                    if (Str[1] == "(hl)") { Code = new byte[] { 203, 6 }; return; }                             //RLC (HL)
+                    if (ReadIX(Str[1], out S)) { Code = new byte[] { 221, 203, (byte)S, 6 }; return; }          //RLC (IX+S)
+                    if (ReadIY(Str[1], out S)) { Code = new byte[] { 253, 203, (byte)S, 6 }; return; }          //RLC (IY+S)
+                }
+            }
+            if (Str[0] == "rrc")
+            {
+                if (Str.Length == 2)
+                {
+                    if (Str[1] == "a") { Code = new byte[] { 203, 15 }; return; }                               //RRC A
+                    if (Str[1] == "h") { Code = new byte[] { 203, 12 }; return; }                               //RRC H
+                    if (Str[1] == "l") { Code = new byte[] { 203, 13 }; return; }                               //RRC L
+                    if (Str[1] == "b") { Code = new byte[] { 203, 8 }; return; }                                //RRC B
+                    if (Str[1] == "c") { Code = new byte[] { 203, 9 }; return; }                                //RRC C
+                    if (Str[1] == "d") { Code = new byte[] { 203, 10 }; return; }                               //RRC D
+                    if (Str[1] == "e") { Code = new byte[] { 203, 11 }; return; }                               //RRC E
+                    if (Str[1] == "(hl)") { Code = new byte[] { 203, 14 }; return; }                            //RRC (HL)
+                    if (ReadIX(Str[1], out S)) { Code = new byte[] { 221, 203, (byte)S, 14 }; return; }         //RRC (IX+S)
+                    if (ReadIY(Str[1], out S)) { Code = new byte[] { 253, 203, (byte)S, 14 }; return; }         //RRC (IY+S)
+                }
+            }
+            if (Str[0] == "rla") { Code = new byte[] { 23 }; return; }                                          //RLA
+            if (Str[0] == "rra") { Code = new byte[] { 31 }; return; }                                          //RRA
+            if (Str[0] == "rlca") { Code = new byte[] { 7 }; return; }                                          //RLCA
+            if (Str[0] == "rrca") { Code = new byte[] { 15 }; return; }                                         //RRCA
+            if (Str[0] == "rld") { Code = new byte[] { 237, 111 }; return; }                                    //RLD
+            if (Str[0] == "rrd") { Code = new byte[] { 237, 103 }; return; }                                    //RRD
+            #endregion
+            if (Str[0] == "exx") { Code = new byte[] { 217 }; return; }                                         //EXX
             if (Str[0] == "ex")
             {
                 if (Str.Count() == 3)
@@ -732,11 +801,10 @@ namespace ZXASM
                 }
             }
 
-            if (Str[0] == "nop") Code = new byte[] { 0 };
-            if (Str[0] == "ret") Code = new byte[] { 201 };
-            if (Str[0] == "reti") Code = new byte[] { 239, 77 };
-            if (Str[0] == "di") Code = new byte[] { 243 };
-            if (Str[0] == "ei") Code = new byte[] { 251 };
+            if (Str[0] == "nop") { Code = new byte[] { 0 }; return; }                                           //NOP
+            if (Str[0] == "reti") { Code = new byte[] { 239, 77 }; }                                            //RETI
+            if (Str[0] == "di") { Code = new byte[] { 243 }; return; }                                          //DI
+            if (Str[0] == "ei") { Code = new byte[] { 251 }; return; }                                          //EI
             if (Str[0] == "defb")
             {
                 Code = new byte[Str.Length - 1];
