@@ -666,6 +666,56 @@ namespace ZXASM
 
 
             #endregion
+            #region SRL, SRA, SLA
+            if (Str[0] == "srl")
+            {
+                if (Str.Length == 2)
+                {
+                    if (Str[1] == "a") { Code = new byte[] { 203, 63 }; return; }                               //SRL A
+                    if (Str[1] == "h") { Code = new byte[] { 203, 60 }; return; }                               //SRL H
+                    if (Str[1] == "l") { Code = new byte[] { 203, 61 }; return; }                               //SRL L
+                    if (Str[1] == "b") { Code = new byte[] { 203, 56 }; return; }                               //SRL B
+                    if (Str[1] == "c") { Code = new byte[] { 203, 57 }; return; }                               //SRL C
+                    if (Str[1] == "d") { Code = new byte[] { 203, 58 }; return; }                               //SRL D
+                    if (Str[1] == "e") { Code = new byte[] { 203, 59 }; return; }                               //SRL E
+                    if (Str[1] == "(hl)") { Code = new byte[] { 203, 62 }; return; }                            //SRL (HL)
+                    if (ReadIX(Str[1], out S)) { Code = new byte[] { 221, 203, (byte)S, 62 }; return; }         //SRL (IX+S)
+                    if (ReadIY(Str[1], out S)) { Code = new byte[] { 253, 203, (byte)S, 62 }; return; }         //SRL (IY+S)
+                }
+            }
+            if (Str[0] == "sra")
+            {
+                if (Str.Length == 2)
+                {
+                    if (Str[1] == "a") { Code = new byte[] { 203, 47 }; return; }                               //SRA A
+                    if (Str[1] == "h") { Code = new byte[] { 203, 44 }; return; }                               //SRA H
+                    if (Str[1] == "l") { Code = new byte[] { 203, 45 }; return; }                               //SRA L
+                    if (Str[1] == "b") { Code = new byte[] { 203, 40 }; return; }                               //SRA B
+                    if (Str[1] == "c") { Code = new byte[] { 203, 41 }; return; }                               //SRA C
+                    if (Str[1] == "d") { Code = new byte[] { 203, 42 }; return; }                               //SRA D
+                    if (Str[1] == "e") { Code = new byte[] { 203, 43 }; return; }                               //SRA E
+                    if (Str[1] == "(hl)") { Code = new byte[] { 203, 46 }; return; }                            //SRA (HL)
+                    if (ReadIX(Str[1], out S)) { Code = new byte[] { 221, 203, (byte)S, 46 }; return; }         //SRA (IX+S)
+                    if (ReadIY(Str[1], out S)) { Code = new byte[] { 253, 203, (byte)S, 46 }; return; }         //SRA (IY+S)
+                }
+            }
+            if (Str[0] == "sla")
+            {
+                if (Str.Length == 2)
+                {
+                    if (Str[1] == "a") { Code = new byte[] { 203, 39 }; return; }                               //SLA A
+                    if (Str[1] == "h") { Code = new byte[] { 203, 36 }; return; }                               //SLA H
+                    if (Str[1] == "l") { Code = new byte[] { 203, 37 }; return; }                               //SLA L
+                    if (Str[1] == "b") { Code = new byte[] { 203, 32 }; return; }                               //SLA B
+                    if (Str[1] == "c") { Code = new byte[] { 203, 33 }; return; }                               //SLA C
+                    if (Str[1] == "d") { Code = new byte[] { 203, 34 }; return; }                               //SLA D
+                    if (Str[1] == "e") { Code = new byte[] { 203, 35 }; return; }                               //SLA E
+                    if (Str[1] == "(hl)") { Code = new byte[] { 203, 38 }; return; }                            //SLA (HL)
+                    if (ReadIX(Str[1], out S)) { Code = new byte[] { 221, 203, (byte)S, 38 }; return; }         //SLA (IX+S)
+                    if (ReadIY(Str[1], out S)) { Code = new byte[] { 253, 203, (byte)S, 38 }; return; }         //SLA (IY+S)
+                }
+            }
+            #endregion
             if (Str[0] == "exx")
             {
                 Code = new byte[] { 217 }; return;                                                              //EXX
