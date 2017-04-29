@@ -305,7 +305,22 @@ namespace ZXASM
                 else return;
             }
             #endregion
-            
+
+            #region EX
+            if (Str[0] == "exx") { Code = new byte[] { 217 }; return; }                                         //EXX
+            if (Str[0] == "ex")
+            {
+                if (Str.Count() == 3)
+                {
+                    if (Str[1] == "de" & Str[2] == "hl") { Code = new byte[] { 235 }; return; }                 //EX DE,HL
+                    if (Str[1] == "af" & Str[2] == "af'") { Code = new byte[] { 8 }; return; }                  //EX AF,AF'
+                    if (Str[1] == "(sp)" & Str[2] == "hl") { Code = new byte[] { 227 }; return; }               //EX (SP),HL
+                    if (Str[1] == "(sp)" & Str[2] == "ix") { Code = new byte[] { 221, 227 }; return; }          //EX (SP),IX
+                    if (Str[1] == "(sp)" & Str[2] == "iy") { Code = new byte[] { 253, 227 }; return; }          //EX (SP),IY
+                }
+            }
+            #endregion
+
             #region ADD, ADC, INC
             if (Str[0] == "add")
             {
@@ -921,20 +936,7 @@ namespace ZXASM
             if (Str[0] == "daa") { Code = new byte[] { 39 }; return; }                                          //DAA
             #endregion
 
-            /*if (Str[0] == "exx") { Code = new byte[] { 217 }; return; }                                         //EXX
-            if (Str[0] == "ex")
-            {
-                if (Str.Count() == 3)
-                {
-                    if (Str[1] == "de" & Str[2] == "hl") { Code = new byte[] { 235 }; return; }                 //EX DE,HL
-                    if (Str[1] == "af" & Str[2] == "af'") { Code = new byte[] { 8 }; return; }                  //EX AF,AF'
-                    if (Str[1] == "(sp)" & Str[2] == "hl") { Code = new byte[] { 227 }; return; }               //EX (SP),HL
-                    if (Str[1] == "(sp)" & Str[2] == "ix") { Code = new byte[] { 221, 227 }; return; }          //EX (SP),IX
-                    if (Str[1] == "(sp)" & Str[2] == "iy") { Code = new byte[] { 253, 227 }; return; }          //EX (SP),IY
-                }
-            }
 
-            //if (Str[0] == "reti") { Code = new byte[] { 239, 77 }; }                                            //RETI*/
             if (Code == null)
                 throw new ArgumentException("Не известная команда \"" + Str[0] + "\"");
         }

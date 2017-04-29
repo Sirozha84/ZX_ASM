@@ -47,9 +47,8 @@ namespace ZXASM
             }
             else
             {
-                Console.WriteLine("Компиляция завершилась ошибками:");
-                foreach (Error er in Error.List)
-                    Console.WriteLine(er.File + ": " + er.StringNum + ": " + er.String + "\n          " + er.Message);
+                FormErrors form = new FormErrors();
+                form.ShowDialog();
             }
 
             //Далее делаем что-то с получившимся бинарником
