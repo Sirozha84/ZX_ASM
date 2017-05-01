@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
 
 namespace ZXASM
 {
@@ -52,12 +50,20 @@ namespace ZXASM
             }
 
             //Далее делаем что-то с получившимся бинарником
-            //if (Out == 0)...             //Просто бинарник
-            if (Out == 1) SaveSNA(FileName);    //Сохранение снэпшота
-            //if (Out == 2) SaveSNA();... //И, видимо, открытие этого снэпшота
+            if (Out == 0) SaveBIN(FileName);
+            if (Out == 1) SaveSNA(FileName);
 
             Properties.Settings.Default.Runs++; //Счётчик запусков, так, по приколу
             Properties.Settings.Default.Bytes += codes.Count; //И счётчик кода всего, обожаю статистику :-)
+        }
+
+        static void SaveBIN(String FileName)
+        {
+            using (BinaryWriter file = new BinaryWriter(new FileStream(FileName + ".bin", FileMode.Create)))
+            {
+                foreach (byte b in codes)
+                    file.Write(b);
+            }
         }
 
         static void SaveSNA(string FileName)
@@ -68,7 +74,7 @@ namespace ZXASM
             SNA[24] = 255;
             SNA[49177] = (byte)(StartAdress / 256);
             SNA[49178] = (byte)(StartAdress % 256);
-            System.IO.File.WriteAllBytes(FileName + ".sna", SNA);
+            File.WriteAllBytes(FileName + ".sna", SNA);
         }
 
         /// <summary>
@@ -88,7 +94,6 @@ namespace ZXASM
                 {
                     Label label = new Label(module, str);
                     Token token = new Token(module, num, str);
-                    //if (token.IsComand) Token.List.Add(token);
 
 #if DEBUG
                     if (token.Code != null)

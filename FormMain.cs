@@ -10,7 +10,6 @@ namespace ZXASM
 
         private void FormMain_Load(object sender, EventArgs e)
         {
-            toolStripStatusLabel1.Text = Program.Site;
             Project.New();
             DrawDocument();
         }
@@ -22,18 +21,6 @@ namespace ZXASM
             Top = Properties.Settings.Default.WindowTop;
             Width = Properties.Settings.Default.WindowWidth;
             Height = Properties.Settings.Default.WindowHeight;
-        }
-
-
-
-        private void menuhelp_Click(object sender, EventArgs e)
-        {
-            try { HelpClose(); Help.StartInfo.FileName = "help.chm"; Help.Start(); }
-            catch
-            {
-                MessageBox.Show("Файл справки не найден.",
-                Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
@@ -90,21 +77,24 @@ namespace ZXASM
         private void toolpaste_Click(object sender, EventArgs e) { textBox1.Paste(); }
         private void toolundo_Click(object sender, EventArgs e) { Project.Undo(); DrawDocument(); }
         private void toolredo_Click(object sender, EventArgs e) { Project.Redo(); DrawDocument(); }
-        private void toolStripStatusLabel1_Click(object sender, EventArgs e) { System.Diagnostics.Process.Start(Program.Url); }
+        private void ToolStripMenuItemSite_Click(object sender, EventArgs e) { System.Diagnostics.Process.Start(Program.UrlS); }
+        private void ToolStripMenuItemPage_Click(object sender, EventArgs e) { System.Diagnostics.Process.Start(Program.UrlP); }
+        private void toolStripButtonRun_Click(object sender, EventArgs e) { ToolStripMenuItemRun_Click(null, null); }
 
-        private void компиляцияToolStripMenuItem_Click(object sender, EventArgs e)
+        private void ToolStripMenuItemRun_Click(object sender, EventArgs e)
         {
-            Compiler.Compile(textBox1.Text, "", 0);
+            Compiler.Compile(textBox1.Text, Project.FileName, 1);
+            System.Diagnostics.Process.Start(Project.FileName + ".sna");
         }
 
-        private void собратьСнимокToolStripMenuItem_Click(object sender, EventArgs e)
+        private void ToolStripMenuItemBin_Click(object sender, EventArgs e)
         {
-            Compiler.Compile(textBox1.Text, @"c:\Users\sg\YandexDisk\Проекты\test", 1);
+            Compiler.Compile(textBox1.Text, Project.FileName, 0);
         }
 
-        private void сайтРазработчикаToolStripMenuItem_Click(object sender, EventArgs e)
+        private void ToolStripMenuItemSNA_Click(object sender, EventArgs e)
         {
-            System.Diagnostics.Process.Start(Program.Url);
+            Compiler.Compile(textBox1.Text, Project.FileName, 1);
         }
     }
 }
